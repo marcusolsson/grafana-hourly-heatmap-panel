@@ -1,6 +1,6 @@
 # Heatmap for Grafana
 
-This is a panel plugin for Grafana to visualize heatmaps.
+A panel plugin for Grafana to visualize heatmaps.
 
 **Important:** This plugin is still under development and is not ready for production. Use at your own risk.
 
