@@ -4,9 +4,7 @@ A panel plugin for Grafana to visualize heatmaps.
 
 **Important:** This plugin is still under development and is not ready for production. Use at your own risk.
 
-<div align="center">
-  <img width="100%" src="https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/screenshot.png" />
-</div>
+<img width="100%" src="https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/screenshot.png" />
 
 ## Background
 
