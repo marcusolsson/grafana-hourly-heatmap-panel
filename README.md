@@ -4,6 +4,10 @@ This is a panel plugin for Grafana to visualize heatmaps.
 
 **Important:** This plugin is still under development and is not ready for production. Use at your own risk.
 
+<div align="center">
+  <img width="80%" src="https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/dark.png" />
+</div>
+
 ## Background
 
 The [carpet-plot](https://github.com/petrslavotinek/grafana-carpetplot) panel plugin is one of the most used plugins for Grafana. Unfortunately, it's no longer being actively maintained.
