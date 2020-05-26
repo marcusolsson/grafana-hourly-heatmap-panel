@@ -34,7 +34,7 @@ const reduce = (agg: PointAgg[], reducer: (n: Array<number | undefined>) => numb
   }));
 };
 
-const group = (points: Point[], by: number): PointAgg[] => {
+export const group = (points: Point[], by: number): PointAgg[] => {
   const tmp = points.map(point => {
     const time = moment(point.time).utc();
     const mins = time.minutes();
