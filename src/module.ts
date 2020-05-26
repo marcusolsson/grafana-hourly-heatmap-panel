@@ -1,6 +1,8 @@
-import { PanelPlugin, FieldConfigProperty } from '@grafana/data';
+import { PanelPlugin, FieldConfigProperty, dateTime } from '@grafana/data';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
+
+import * as d3 from 'd3';
 
 const modeSelected = (mode: string) => (config: HeatmapOptions) => config.mode === mode;
 
@@ -65,6 +67,36 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         },
         showIf: modeSelected('spectrum'),
         defaultValue: 'interpolateSpectral',
+      })
+
+      .addSelect({
+        path: 'from',
+        name: 'From',
+        description: '',
+        settings: {
+          options: d3.range(0, 24, 1).map(h => ({
+            label: dateTime()
+              .startOf('day')
+              .add(h, 'hour')
+              .format('HH:mm'),
+            value: `${h}`,
+          })),
+        },
+        defaultValue: '0',
+      })
+      .addSelect({
+        path: 'to',
+        name: 'To',
+        settings: {
+          options: d3.range(0, 24, 1).map(h => ({
+            label: dateTime()
+              .startOf('day')
+              .add(h, 'hour')
+              .format('HH:mm'),
+            value: `${h}`,
+          })),
+        },
+        defaultValue: '0',
       })
       .addBooleanSwitch({
         path: 'showLegend',

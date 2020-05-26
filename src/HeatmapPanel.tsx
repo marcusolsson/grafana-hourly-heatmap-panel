@@ -14,13 +14,15 @@ interface Props extends PanelProps<HeatmapOptions> {}
  * HeatmapPanel visualizes a heatmap with a histogram for each day along with axes and a legend.
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone }) => {
-  const { spectrum, showLegend } = options;
+  const { spectrum, showLegend, from, to } = options;
+
+  const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
   // Only get the first series if the query returned more than one.
   const frame = data.series[0];
 
   // Create a histogram for each day.
-  const bucketData = bucketize(frame, timeZone);
+  const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
 
   // Create the scale we'll be using to map values to colors.
   const colorScale = makeColorScale(spectrum.scheme, bucketData.min, bucketData.max);
@@ -47,6 +49,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
           height={heatmapHeight}
           colorScale={colorScale}
           timeZone={timeZone}
+          dailyInterval={dailyIntervalHours}
         />
       </g>
       {showLegend ? (

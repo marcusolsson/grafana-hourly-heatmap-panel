@@ -12,6 +12,8 @@ export interface HeatmapOptions {
   mode: ColorMode;
   spectrum: SpectrumOptions;
   showLegend: boolean;
+  from: string;
+  to: string;
 }
 
 export interface HeatmapFieldConfig {

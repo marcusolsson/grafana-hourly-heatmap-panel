@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { dateTime, DataFrame, DisplayProcessor } from '@grafana/data';
+import { dateTime, dateTimeParse, DataFrame, DisplayProcessor } from '@grafana/data';
 
 export interface Point {
   time: number;
@@ -82,7 +82,7 @@ const defaultDisplay: DisplayProcessor = (value: any) => ({ numeric: value, text
 const minutesPerDay = 24 * 60;
 
 // bucketize returns the main data structure used by the visualizations.
-export const bucketize = (frame: DataFrame, timeZone: string): BucketData => {
+export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [number, number]): BucketData => {
   // Use the first temporal field.
   const timeField = frame.fields.find(f => f.type === 'time');
 
@@ -95,11 +95,18 @@ export const bucketize = (frame: DataFrame, timeZone: string): BucketData => {
     value: valueField?.values.get(i),
   }));
 
+  const filteredRows = rows.filter(row => {
+    const dt = dateTimeParse(row.time, { timeZone });
+    const hour = dt.hour ? dt.hour() : 0.0;
+
+    return dailyInterval[0] <= hour && hour < dailyInterval[1];
+  });
+
   // Extract the field configuration..
   const customData = valueField?.config.custom.data;
 
   // Group and reduce values.
-  const groupedByMinutes = groupByMinutes(rows, customData.groupBy, timeZone);
+  const groupedByMinutes = groupByMinutes(filteredRows, customData.groupBy, timeZone);
   const reducedMinutes = reduce(groupedByMinutes, aggregators[customData.aggregator]);
   const points = groupByDay(reducedMinutes, timeZone).flatMap(({ time, values }) =>
     values.map(({ time, value }) => ({

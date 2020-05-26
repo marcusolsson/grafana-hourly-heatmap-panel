@@ -16,13 +16,14 @@ interface Props {
   height: number;
   colorScale: d3.ScaleSequential<string>;
   timeZone: string;
+  dailyInterval: [number, number];
 }
 
 /**
  * A heatmap chart where each column represents a day, and each row represents a
  * bucket.
  */
-export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale, timeZone }) => {
+export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale, timeZone, dailyInterval }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
   const offset = {
@@ -73,6 +74,7 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale, time
       height={chartHeight}
       colorScale={colorScale}
       timeZone={timeZone}
+      dailyInterval={dailyInterval}
     />
   );
 
@@ -88,6 +90,7 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale, time
             width={chartWidth}
             height={chartHeight}
             timeZone={timeZone}
+            dailyInterval={dailyInterval}
           />
           {heatMap}
         </g>
@@ -106,24 +109,49 @@ interface HeatmapProps {
   height: number;
   numBuckets: number;
   timeZone: string;
+  dailyInterval: [number, number];
 }
+
+const hoursToMinutesInterval = (intervalHours: [number, number]): [number, number] => {
+  const from = intervalHours[0];
+  const to = intervalHours[1] === 0 ? 24 : intervalHours[1];
+
+  return [from * 60, to * 60];
+};
 
 /**
  * A two-dimensional grid of colored cells.
  */
-const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width, height, numBuckets, timeZone }) => {
+const HeatmapGraph: React.FC<HeatmapProps> = ({
+  values,
+  data,
+  colorScale,
+  width,
+  height,
+  numBuckets,
+  timeZone,
+  dailyInterval,
+}) => {
   const x = d3
     .scaleBand()
     .domain(values)
     .rangeRound([0, width]);
 
+  const dailyIntervalMinutes = hoursToMinutesInterval(dailyInterval);
+
   const y = d3
     .scaleLinear()
-    .domain([0, 1440])
+    .domain(dailyIntervalMinutes)
     .rangeRound([0, height]);
 
+  const minutesPerDay = 24 * 60;
+
+  const minutesPerBucket = minutesPerDay / numBuckets;
+  const intervalMinutes = dailyIntervalMinutes[1] - dailyIntervalMinutes[0];
+  const pixelsPerBucket = height / (intervalMinutes / minutesPerBucket);
+
   const cellWidth = Math.ceil(x.bandwidth());
-  const cellHeight = Math.ceil(height / numBuckets);
+  const cellHeight = Math.ceil(pixelsPerBucket);
 
   // Generates a tooltip for a data point.
   const tooltip = (day: DateTime, displayValue: any) => {
@@ -131,7 +159,7 @@ const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width,
       <div>
         <div>
           {day.format('LL')} {day.format('LT')}&#8211;
-          {day.add((24 * 60) / numBuckets, 'minute').format('LT')}
+          {day.add(minutesPerDay / numBuckets, 'minute').format('LT')}
         </div>
         <div>
           <strong>
@@ -179,9 +207,19 @@ interface TimeAxisProps {
   height: number;
   numDays: number;
   timeZone: string;
+  dailyInterval: [number, number];
 }
 
-export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, height, numDays, timeZone }) => {
+export const TimeAxis: React.FC<TimeAxisProps> = ({
+  values,
+  from,
+  to,
+  width,
+  height,
+  numDays,
+  timeZone,
+  dailyInterval,
+}) => {
   const x = d3
     .scaleBand()
     .domain(values)
@@ -191,7 +229,7 @@ export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, hei
 
   const y = d3
     .scaleLinear()
-    .domain([0, 24])
+    .domain(dailyInterval)
     .rangeRound([0, height]);
 
   const preferredTickHeight = 20;
@@ -200,7 +238,7 @@ export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, hei
 
   const yAxis: any = d3
     .axisLeft(y)
-    .tickValues(d3.range(0, 24, every))
+    .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
     .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
 
   return (
