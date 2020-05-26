@@ -1,5 +1,8 @@
 # Heatmap for Grafana
 
+[![License](https://img.shields.io/github/license/marcusolsson/grafana-heatmap-panel)](LICENSE)
+[![PRs welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribute)
+
 A panel plugin for Grafana to visualize heatmaps.
 
 **Important:** This plugin is still under development and is not ready for production. Use at your own risk.
