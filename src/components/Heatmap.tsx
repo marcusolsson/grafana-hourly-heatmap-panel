@@ -1,12 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import { DateTimeDuration, toDuration, DateTime, dateTime, dateTimeParse, dateTimeFormat } from '@grafana/data';
+
 import { BucketData } from '../bucket';
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-
-const moment = require('moment');
 
 const timeFormat = 'MM/DD';
 
@@ -15,13 +15,14 @@ interface Props {
   width: number;
   height: number;
   colorScale: d3.ScaleSequential<string>;
+  timeZone: string;
 }
 
 /**
  * A heatmap chart where each column represents a day, and each row represents a
  * bucket.
  */
-export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale }) => {
+export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale, timeZone }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
   const offset = {
@@ -39,15 +40,15 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale }) =>
   // Find the first and last day in the dataset.
   const [begin, end] = d3.extent(
     data.points.map(({ dayMillis }) =>
-      moment(dayMillis)
+      dateTimeParse(dayMillis, { timeZone })
         .startOf('day')
         .valueOf()
     )
   );
 
   // Create the values for the X axis.
-  const firstDay = moment(begin);
-  const lastDay = moment(end);
+  const firstDay = dateTimeParse(begin || Date.now(), { timeZone });
+  const lastDay = dateTimeParse(end || Date.now(), { timeZone });
 
   const numDays = lastDay.add(1, 'day').diff(firstDay, 'days');
 
@@ -57,8 +58,7 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale }) =>
   let values: string[] = [];
   for (let i = 0; i < numDays; i++) {
     values.push(
-      firstDay
-        .clone()
+      dateTime(firstDay)
         .add(i, 'day')
         .format(timeFormat)
     );
@@ -72,6 +72,7 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale }) =>
       width={chartWidth}
       height={chartHeight}
       colorScale={colorScale}
+      timeZone={timeZone}
     />
   );
 
@@ -86,6 +87,7 @@ export const Heatmap: React.FC<Props> = ({ data, width, height, colorScale }) =>
             numDays={numDays}
             width={chartWidth}
             height={chartHeight}
+            timeZone={timeZone}
           />
           {heatMap}
         </g>
@@ -103,12 +105,13 @@ interface HeatmapProps {
   width: number;
   height: number;
   numBuckets: number;
+  timeZone: string;
 }
 
 /**
  * A two-dimensional grid of colored cells.
  */
-const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width, height, numBuckets }) => {
+const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width, height, numBuckets, timeZone }) => {
   const x = d3
     .scaleBand()
     .domain(values)
@@ -123,7 +126,7 @@ const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width,
   const cellHeight = Math.ceil(height / numBuckets);
 
   // Generates a tooltip for a data point.
-  const tooltip = (day: moment.Moment, displayValue: any) => {
+  const tooltip = (day: DateTime, displayValue: any) => {
     return (
       <div>
         <div>
@@ -145,11 +148,18 @@ const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width,
       {data.points.map(d => {
         const displayValue = data.displayProcessor(d.value);
 
+        const day = dateTimeParse(d.dayMillis, { timeZone: timeZone }).format(timeFormat);
+
+        const bucketTime = dateTimeParse(d.bucketStartMillis, { timeZone: timeZone });
+
+        const bucket =
+          (bucketTime.hour ? bucketTime.hour() : 0.0) * 60 + (bucketTime.minute ? bucketTime.minute() : 0.0);
+
         return (
-          <Tippy content={tooltip(moment(d.dayMillis), displayValue)} placement="bottom">
+          <Tippy content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)} placement="bottom">
             <rect
-              x={x(moment(d.dayMillis).format(timeFormat))}
-              y={Math.ceil(y(d.bucket))}
+              x={x(day)}
+              y={Math.ceil(y(bucket))}
               fill={colorScale(d.value)}
               width={cellWidth}
               height={cellHeight}
@@ -163,20 +173,21 @@ const HeatmapGraph: React.FC<HeatmapProps> = ({ values, data, colorScale, width,
 
 interface TimeAxisProps {
   values: any[];
-  from: moment.Moment;
-  to: moment.Moment;
+  from: DateTime;
+  to: DateTime;
   width: number;
   height: number;
   numDays: number;
+  timeZone: string;
 }
 
-export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, height, numDays }) => {
+export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, height, numDays, timeZone }) => {
   const x = d3
     .scaleBand()
     .domain(values)
     .rangeRound([0, width]);
 
-  const xAxis: any = createResponsiveTimeAxis(x, from, to, width, numDays);
+  const xAxis: any = createResponsiveTimeAxis(x, from, to, width, numDays, timeZone);
 
   const y = d3
     .scaleLinear()
@@ -190,7 +201,7 @@ export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, hei
   const yAxis: any = d3
     .axisLeft(y)
     .tickValues(d3.range(0, 24, every))
-    .tickFormat(d => formatDuration(moment.duration(d, 'hours'), 'HH:mm'));
+    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
 
   return (
     <>
@@ -224,10 +235,11 @@ export const TimeAxis: React.FC<TimeAxisProps> = ({ values, from, to, width, hei
 // intervals.
 const createResponsiveTimeAxis = (
   bandScale: any,
-  from: moment.Moment,
-  to: moment.Moment,
+  from: DateTime,
+  to: DateTime,
   width: number,
-  numDays: number
+  numDays: number,
+  timeZone: string
 ) => {
   const xTime = d3
     .scaleTime()
@@ -242,14 +254,14 @@ const createResponsiveTimeAxis = (
   const xTimeAxis = d3
     .axisBottom(xTime)
     .ticks(d3.timeDay, every)
-    .tickFormat(d => moment(d).format('MM/DD'));
+    .tickFormat(d => dateTimeFormat(dateTime(d as number), { timeZone, format: 'MM/DD' }));
 
   const xCategoryAxis = d3.axisBottom(bandScale);
 
   return every > 1 ? xTimeAxis : xCategoryAxis;
 };
 
-const formatDuration = (duration: moment.Duration, format: string) => {
-  const date = moment().startOf('day');
-  return date.add(duration).format(format);
+const formatDuration = (duration: DateTimeDuration, format: string) => {
+  const date = dateTime().startOf('day');
+  return date.add(duration.hours(), 'hours').format(format);
 };

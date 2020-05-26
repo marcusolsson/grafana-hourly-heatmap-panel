@@ -75,28 +75,28 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
 
 const colorSchemes = [
   // Diverging
-  { label: 'Spectral', value: 'interpolateSpectral', invert: 'always' },
-  { label: 'RdYlGn', value: 'interpolateRdYlGn', invert: 'always' },
+  { label: 'Spectral', value: 'interpolateSpectral' },
+  { label: 'RdYlGn', value: 'interpolateRdYlGn' },
 
   // Sequential (Single Hue)
-  { label: 'Blues', value: 'interpolateBlues', invert: 'dark' },
-  { label: 'Greens', value: 'interpolateGreens', invert: 'dark' },
-  { label: 'Greys', value: 'interpolateGreys', invert: 'dark' },
-  { label: 'Oranges', value: 'interpolateOranges', invert: 'dark' },
-  { label: 'Purples', value: 'interpolatePurples', invert: 'dark' },
-  { label: 'Reds', value: 'interpolateReds', invert: 'dark' },
+  { label: 'Blues', value: 'interpolateBlues' },
+  { label: 'Greens', value: 'interpolateGreens' },
+  { label: 'Greys', value: 'interpolateGreys' },
+  { label: 'Oranges', value: 'interpolateOranges' },
+  { label: 'Purples', value: 'interpolatePurples' },
+  { label: 'Reds', value: 'interpolateReds' },
 
   // Sequential (Multi-Hue)
-  { label: 'BuGn', value: 'interpolateBuGn', invert: 'dark' },
-  { label: 'BuPu', value: 'interpolateBuPu', invert: 'dark' },
-  { label: 'GnBu', value: 'interpolateGnBu', invert: 'dark' },
-  { label: 'OrRd', value: 'interpolateOrRd', invert: 'dark' },
-  { label: 'PuBuGn', value: 'interpolatePuBuGn', invert: 'dark' },
-  { label: 'PuBu', value: 'interpolatePuBu', invert: 'dark' },
-  { label: 'PuRd', value: 'interpolatePuRd', invert: 'dark' },
-  { label: 'RdPu', value: 'interpolateRdPu', invert: 'dark' },
-  { label: 'YlGnBu', value: 'interpolateYlGnBu', invert: 'dark' },
-  { label: 'YlGn', value: 'interpolateYlGn', invert: 'dark' },
-  { label: 'YlOrBr', value: 'interpolateYlOrBr', invert: 'dark' },
-  { label: 'YlOrRd', value: 'interpolateYlOrRd', invert: 'darm' },
+  { label: 'BuGn', value: 'interpolateBuGn' },
+  { label: 'BuPu', value: 'interpolateBuPu' },
+  { label: 'GnBu', value: 'interpolateGnBu' },
+  { label: 'OrRd', value: 'interpolateOrRd' },
+  { label: 'PuBuGn', value: 'interpolatePuBuGn' },
+  { label: 'PuBu', value: 'interpolatePuBu' },
+  { label: 'PuRd', value: 'interpolatePuRd' },
+  { label: 'RdPu', value: 'interpolateRdPu' },
+  { label: 'YlGnBu', value: 'interpolateYlGnBu' },
+  { label: 'YlGn', value: 'interpolateYlGn' },
+  { label: 'YlOrBr', value: 'interpolateYlOrBr' },
+  { label: 'YlOrRd', value: 'interpolateYlOrRd' },
 ];
