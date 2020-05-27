@@ -65,6 +65,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
             height={legendHeight}
             min={bucketData.min}
             max={bucketData.max}
+            display={bucketData.displayProcessor}
           />
         </g>
       ) : null}
