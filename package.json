@@ -1,18 +1,18 @@
 {
-  "name": "grafana-heatmap-panel",
+  "name": "grafana-hourly-heatmap-panel",
   "version": "0.1.0",
-  "description": "A heatmap panel plugin for Grafana",
+  "description": "A hourly heatmap panel plugin for Grafana",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "repository": "github:marcusolsson/grafana-heatmap-panel",
+  "repository": "github:marcusolsson/grafana-hourly-heatmap-panel",
   "author": "Marcus Olsson",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "github:marcusolsson/grafana-heatmap-panel/issues"
+    "url": "github:marcusolsson/grafana-hourly-heatmap-panel/issues"
   },
   "devDependencies": {
     "@grafana/data": "7.0.0",
