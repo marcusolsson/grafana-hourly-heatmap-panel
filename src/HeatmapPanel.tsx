@@ -1,12 +1,12 @@
 import React from 'react';
-import { PanelProps } from '@grafana/data';
-import { HeatmapOptions } from 'types';
+import { PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
-import { makeColorScale } from './colors';
 import { bucketize } from './bucket';
+import { HeatmapOptions } from './types';
+import { makeSpectrumColorScale, makeCustomColorScale } from './colors';
 
-import { SpectrumLegend } from './components/SpectrumLegend';
-import { Heatmap } from './components/Heatmap';
+import { HeatmapChart } from './components/HeatmapChart';
+import { Legend } from './components/Legend';
 
 interface Props extends PanelProps<HeatmapOptions> {}
 
@@ -14,7 +14,7 @@ interface Props extends PanelProps<HeatmapOptions> {}
  * HeatmapPanel visualizes a heatmap with a histogram for each day along with axes and a legend.
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone }) => {
-  const { spectrum, showLegend, from, to } = options;
+  const { showLegend, from, to } = options;
 
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
@@ -24,10 +24,19 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   // Create a histogram for each day.
   const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
 
-  // Create the scale we'll be using to map values to colors.
-  const colorScale = makeColorScale(spectrum.scheme, bucketData.min, bucketData.max);
+  // Get custom fields options.
+  const field = frame.fields.find(field => field.type === 'number');
+  const spectrum = field?.config.custom.spectrum;
+  const custom = field?.config.custom.custom;
+  const thresholds: ThresholdsConfig = custom.thresholds || { mode: ThresholdsMode.Percentage, steps: [] };
 
-  // Calculate legend dimensions.
+  // Create the scale we'll be using to map values to colors.
+  let scale =
+    field?.config.custom.mode === 'spectrum'
+      ? makeSpectrumColorScale(spectrum.scheme, bucketData.min, bucketData.max)
+      : makeCustomColorScale(custom.colorSpace, bucketData.min, bucketData.max, thresholds);
+
+  // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
   const legendWidth = width - (legendPadding.left + legendPadding.right);
   const legendHeight = 40;
@@ -43,11 +52,11 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   return (
     <svg width={width} height={height}>
       <g transform={`translate(${heatmapPadding.left}, ${heatmapPadding.top})`}>
-        <Heatmap
+        <HeatmapChart
           data={bucketData}
           width={heatmapWidth}
           height={heatmapHeight}
-          colorScale={colorScale}
+          colorScale={scale}
           timeZone={timeZone}
           dailyInterval={dailyIntervalHours}
         />
@@ -59,13 +68,14 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
             heatmapPadding.bottom +
             legendPadding.top})`}
         >
-          <SpectrumLegend
-            scheme={spectrum.scheme}
+          <Legend
             width={legendWidth}
             height={legendHeight}
             min={bucketData.min}
             max={bucketData.max}
             display={bucketData.displayProcessor}
+            thresholds={thresholds}
+            colorScale={scale}
           />
         </g>
       ) : null}
