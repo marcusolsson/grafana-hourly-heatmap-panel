@@ -36,9 +36,9 @@ const interpolators: ColorScaleLookup = {
 };
 
 // makeSpectrumColorScale returns a sequential scale that maps numbers between
-// min and max, using a given color scheme.
-export const makeSpectrumColorScale = (scheme: string, min: number, max: number): d3.ScaleSequential<string> => {
-  return d3.scaleSequential(interpolators[scheme]).domain([max, min]);
+// min and max, using a given color palette.
+export const makeSpectrumColorScale = (palette: string, min: number, max: number): d3.ScaleSequential<string> => {
+  return d3.scaleSequential(interpolators[palette]).domain([max, min]);
 };
 
 interface InterpolatorLookup {
@@ -54,7 +54,7 @@ const interpolationMap: InterpolatorLookup = {
 };
 
 // makeCustomColorScale returns a linear scale that maps numbers between min and
-// max. Instead of using a predefined D3 interpolator, the color scheme is
+// max. Instead of using a predefined D3 interpolator, the color palette is
 // created from a thresholds configuration.
 export const makeCustomColorScale = (colorSpace: string, min: number, max: number, thresholds: ThresholdsConfig) => {
   const interpolator = interpolationMap[colorSpace];

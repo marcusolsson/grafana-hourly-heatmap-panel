@@ -25,8 +25,6 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
-  // The panel consists of two main parts, the main chart area, and the legend.
-  // We use SVG groups, `g`, to translate the elements into place.
   return (
     <svg width={width} height={height}>
       {data.series.map((frame, i) => {
@@ -39,7 +37,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
         // Get custom fields options. For now, we use the configuration in the first
         // numeric field in the data frame.
         const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
-        const colorScheme = fieldConfig.colorScheme;
+        const colorPalette = fieldConfig.colorPalette;
         const colorSpace = fieldConfig.colorSpace;
         const thresholds: ThresholdsConfig = fieldConfig.thresholds || {
           mode: ThresholdsMode.Percentage,
@@ -48,9 +46,9 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
 
         // Create the scale we'll be using to map values to colors.
         let scale =
-          colorScheme === 'custom'
+          colorPalette === 'custom'
             ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
-            : makeSpectrumColorScale(colorScheme, bucketData.min, bucketData.max);
+            : makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max);
 
         return (
           <g transform={`translate(0, ${i * segmentHeight})`}>

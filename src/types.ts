@@ -9,9 +9,9 @@ export interface HeatmapOptions {
 }
 
 export interface HeatmapFieldConfig {
-  colorScheme: string;
+  colorPalette: string;
 
-  // Options for custom color schemes.
+  // Options for custom color palettes.
   colorSpace: string;
   thresholds: ThresholdsConfig;
 

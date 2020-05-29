@@ -11,7 +11,7 @@ import { HeatmapPanel } from './HeatmapPanel';
 
 import * as d3 from 'd3';
 
-const paletteSelected = (colorScheme: string) => (config: HeatmapFieldConfig) => config.colorScheme === colorScheme;
+const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
@@ -46,10 +46,10 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           defaultValue: 'mean',
         })
         .addSelect({
-          path: 'colorScheme',
-          name: 'Color scheme',
+          path: 'colorPalette',
+          name: 'Color palette',
           settings: {
-            options: [{ value: 'custom', label: 'Custom' }, ...predefinedColorSchemes],
+            options: [{ value: 'custom', label: 'Custom' }, ...predefinedColorPalettes],
           },
           defaultValue: 'interpolateSpectral',
         })
@@ -124,7 +124,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       });
   });
 
-const predefinedColorSchemes = [
+const predefinedColorPalettes = [
   // Diverging
   { label: 'Spectral', value: 'interpolateSpectral' },
   { label: 'RdYlGn', value: 'interpolateRdYlGn' },

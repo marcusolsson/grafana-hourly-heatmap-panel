@@ -120,19 +120,12 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
     }))
   );
 
-  // Calculate the min and max values.
-  const [autoMin, autoMax] = d3.extent(points.map(({ value }) => value));
-
-  // Use the min and max defined in the field config, or default to auto values.
-  const min = valueField?.config.min !== undefined ? valueField?.config.min : autoMin;
-  const max = valueField?.config.max !== undefined ? valueField?.config.max : autoMax;
-
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
     displayProcessor: valueField?.display ? valueField?.display : defaultDisplay,
     points: points,
-    min: min as number,
-    max: max as number,
+    min: valueField?.config.min || Number.NEGATIVE_INFINITY,
+    max: valueField?.config.max || Number.POSITIVE_INFINITY,
   };
 };
 
