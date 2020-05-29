@@ -1,5 +1,6 @@
 # Hourly Heatmap for Grafana
 
+[![CircleCI](https://circleci.com/gh/marcusolsson/grafana-hourly-heatmap-panel.svg?style=svg)](https://circleci.com/gh/marcusolsson/grafana-hourly-heatmap-panel)
 [![License](https://img.shields.io/github/license/marcusolsson/grafana-hourly-heatmap-panel)](LICENSE)
 [![PRs welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribute)
 
