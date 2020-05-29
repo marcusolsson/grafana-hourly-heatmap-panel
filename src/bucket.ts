@@ -25,11 +25,11 @@ export interface BucketData {
   displayProcessor: DisplayProcessor;
 }
 
-// reduce applies a reducer to an aggregated point set.
-const reduce = (agg: PointAgg[], reducer: (n: Array<number | undefined>) => number): Point[] => {
+// reduce applies a calculation to an aggregated point set.
+const reduce = (agg: PointAgg[], calculation: (n: Array<number | undefined>) => number): Point[] => {
   return agg.map(({ time, values }) => ({
     time: time,
-    value: reducer(values.map(({ value }) => value)),
+    value: calculation(values.map(({ value }) => value)),
   }));
 };
 
@@ -103,11 +103,11 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
   });
 
   // Extract the field configuration..
-  const customData = valueField?.config.custom.data;
+  const customData = valueField?.config.custom;
 
   // Group and reduce values.
   const groupedByMinutes = groupByMinutes(filteredRows, customData.groupBy, timeZone);
-  const reducedMinutes = reduce(groupedByMinutes, aggregators[customData.aggregator]);
+  const reducedMinutes = reduce(groupedByMinutes, calculations[customData.calculation]);
   const points = groupByDay(reducedMinutes, timeZone).flatMap(({ time, values }) =>
     values.map(({ time, value }) => ({
       dayMillis: time,
@@ -132,9 +132,9 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
   };
 };
 
-// Lookup table for aggregator functions.
-const aggregators: any = {
-  avg: (vals: number[]) => d3.mean(vals),
+// Lookup table for calculations.
+const calculations: any = {
+  mean: (vals: number[]) => d3.mean(vals),
   sum: (vals: number[]) => d3.sum(vals),
   count: (vals: number[]) => vals.length,
   min: (vals: number[]) => d3.min(vals),

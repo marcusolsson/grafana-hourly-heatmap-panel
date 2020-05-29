@@ -11,30 +11,14 @@ import { HeatmapPanel } from './HeatmapPanel';
 
 import * as d3 from 'd3';
 
-const modeSelected = (mode: string) => (config: HeatmapFieldConfig) => config.mode === mode;
+const paletteSelected = (colorScheme: string) => (config: HeatmapFieldConfig) => config.colorScheme === colorScheme;
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
     useCustomConfig: builder => {
       builder
         .addSelect({
-          path: 'data.aggregator',
-          name: 'Aggregator',
-          settings: {
-            options: [
-              { value: 'avg', label: 'Average' },
-              { value: 'sum', label: 'Sum' },
-              { value: 'count', label: 'Count' },
-              { value: 'min', label: 'Min' },
-              { value: 'max', label: 'Max' },
-              { value: 'first', label: 'First' },
-              { value: 'last', label: 'Last' },
-            ],
-          },
-          defaultValue: 'avg',
-        })
-        .addSelect({
-          path: 'data.groupBy',
+          path: 'groupBy',
           name: 'Group by',
           settings: {
             options: [
@@ -46,27 +30,31 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           defaultValue: 60,
         })
         .addSelect({
-          path: 'mode',
-          name: 'Mode',
+          path: 'calculation',
+          name: 'Calculation',
           settings: {
             options: [
-              { value: 'spectrum', label: 'Spectrum' },
-              { value: 'custom', label: 'Custom' },
+              { value: 'mean', label: 'Mean' },
+              { value: 'sum', label: 'Sum' },
+              { value: 'count', label: 'Count' },
+              { value: 'min', label: 'Min' },
+              { value: 'max', label: 'Max' },
+              { value: 'first', label: 'First' },
+              { value: 'last', label: 'Last' },
             ],
           },
-          defaultValue: 'spectrum',
+          defaultValue: 'mean',
         })
         .addSelect({
-          path: 'spectrum.scheme',
+          path: 'colorScheme',
           name: 'Color scheme',
           settings: {
-            options: colorSchemes,
+            options: [{ value: 'custom', label: 'Custom' }, ...predefinedColorSchemes],
           },
-          showIf: modeSelected('spectrum'),
           defaultValue: 'interpolateSpectral',
         })
         .addSelect({
-          path: 'custom.colorSpace',
+          path: 'colorSpace',
           name: 'Color space',
           settings: {
             options: [
@@ -77,18 +65,18 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
               { value: 'cubehelix', label: 'Cubehelix' },
             ],
           },
-          showIf: modeSelected('custom'),
+          showIf: paletteSelected('custom'),
           defaultValue: 'rgb',
         })
         .addCustomEditor({
-          id: 'custom.thresholds',
-          path: 'custom.thresholds',
+          id: 'thresholds',
+          path: 'thresholds',
           name: 'Thresholds',
           editor: standardEditorsRegistry.get('thresholds').editor as any,
           override: standardEditorsRegistry.get('thresholds').editor as any,
           process: thresholdsOverrideProcessor,
           shouldApply: field => field.type === FieldType.number,
-          showIf: modeSelected('custom'),
+          showIf: paletteSelected('custom'),
         });
     },
     standardOptions: [
@@ -136,7 +124,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       });
   });
 
-const colorSchemes = [
+const predefinedColorSchemes = [
   // Diverging
   { label: 'Spectral', value: 'interpolateSpectral' },
   { label: 'RdYlGn', value: 'interpolateRdYlGn' },

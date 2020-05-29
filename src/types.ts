@@ -1,19 +1,6 @@
 import { ThresholdsConfig } from '@grafana/data';
 
-type ColorMode = 'spectrum' | 'custom';
-
-type AggregationFunction = 'avg' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
-
-interface SpectrumOptions {
-  min: number;
-  max: number;
-  scheme: string;
-}
-
-export interface CustomOptions {
-  colorSpace: string;
-  thresholds: ThresholdsConfig;
-}
+type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
 
 export interface HeatmapOptions {
   showLegend: boolean;
@@ -22,9 +9,13 @@ export interface HeatmapOptions {
 }
 
 export interface HeatmapFieldConfig {
-  mode: ColorMode;
-  spectrum: SpectrumOptions;
-  custom: CustomOptions;
-  aggregator: AggregationFunction;
+  colorScheme: string;
+
+  // Options for custom color schemes.
+  colorSpace: string;
+  thresholds: ThresholdsConfig;
+
+  // Options for reducing buckets.
+  calculation: Calculation;
   groupBy: number;
 }
