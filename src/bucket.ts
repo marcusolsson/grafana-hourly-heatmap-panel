@@ -6,14 +6,18 @@ export interface Point {
   value: number;
 }
 
-interface PointAgg {
+interface PointSet {
   time: number;
   values: Point[];
 }
 
 export interface BucketPoint {
+  // dayMillis corresponds to the start of the day.
   dayMillis: number;
+
+  // bucketStartMillis corresponds to the start of a bucket, for example the start of every hour.
   bucketStartMillis: number;
+
   value: number;
 }
 
@@ -26,7 +30,7 @@ export interface BucketData {
 }
 
 // reduce applies a calculation to an aggregated point set.
-const reduce = (agg: PointAgg[], calculation: (n: Array<number | undefined>) => number): Point[] => {
+const reduce = (agg: PointSet[], calculation: (n: Array<number | undefined>) => number): Point[] => {
   return agg.map(({ time, values }) => ({
     time: time,
     value: calculation(values.map(({ value }) => value)),
@@ -34,7 +38,7 @@ const reduce = (agg: PointAgg[], calculation: (n: Array<number | undefined>) => 
 };
 
 // groupByMinutes groups a set of points
-export const groupByMinutes = (points: Point[], minutes: number, timeZone: string): PointAgg[] => {
+export const groupByMinutes = (points: Point[], minutes: number, timeZone: string): PointSet[] => {
   // Create keys for interval start.
   const rounded = points.map(point => {
     const intervalStart = dateTime(point.time);
@@ -59,7 +63,7 @@ export const groupByMinutes = (points: Point[], minutes: number, timeZone: strin
 };
 
 // groupByDay works like to groupByDays but is a bit simpler.
-export const groupByDay = (points: Point[], timeZone: string): PointAgg[] => {
+export const groupByDay = (points: Point[], timeZone: string): PointSet[] => {
   const rounded = points.map(point => ({
     [dateTime(point.time)
       .startOf('day')

@@ -11,12 +11,16 @@ export interface Props {
   colorScale: any;
 }
 
+/**
+ * ColorSpectrum draws a SVG color spectrum using a given color scale.
+ */
 export const ColorSpectrum: React.FC<Props> = ({ width, height, colorScale, min, max }) => {
   const stepSize = 5;
 
+  // Divide the spectrum into segments of equal size.
   const positionRange = d3.range(0, width, stepSize);
 
-  // Map pixel to value.
+  // Map a X coordinate to a value between min and max.
   const valueScale = d3
     .scaleLinear()
     .domain([0, width])

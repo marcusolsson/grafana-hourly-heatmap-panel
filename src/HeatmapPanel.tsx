@@ -11,20 +11,29 @@ import { Legend } from './components/Legend';
 interface Props extends PanelProps<HeatmapOptions> {}
 
 /**
- * HeatmapPanel visualizes a heatmap with a histogram for each day along with axes and a legend.
+ * HeatmapPanel visualizes a heatmap with a histogram for each day along with
+ * axes and a legend.
+ *
+ * A panel is a regular React component that accepts a `Props` that extends
+ * `PanelProps`. The `PanelProps` object gives your component access to things
+ * like query results, panel options, and the current timezone.
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone }) => {
+  // `options` contains the properties defined in the `HeatmapOptions` object.
   const { showLegend, from, to } = options;
-
-  const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
   // Only get the first series if the query returned more than one.
   const frame = data.series[0];
 
-  // Create a histogram for each day.
+  // Parse the extents of hours to display in a day.
+  const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
+
+  // Create a histogram for each day. This builds the main data structure that
+  // we'll use for the heatmap visualization.
   const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
 
-  // Get custom fields options.
+  // Get custom fields options. For now, we use the configuration in the first
+  // numeric field in the data frame.
   const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
   const colorScheme = fieldConfig.colorScheme;
   const colorSpace = fieldConfig.colorSpace;
@@ -52,6 +61,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
     (heatmapPadding.top + heatmapPadding.bottom) -
     (showLegend ? legendHeight + legendPadding.top + legendPadding.bottom : 0.0);
 
+  // The panel consists of two main parts, the main chart area, and the legend.
+  // We use SVG groups, `g`, to translate the elements into place.
   return (
     <svg width={width} height={height}>
       <g transform={`translate(${heatmapPadding.left}, ${heatmapPadding.top})`}>
@@ -64,6 +75,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
           dailyInterval={dailyIntervalHours}
         />
       </g>
+
       {showLegend ? (
         <g
           transform={`translate(${legendPadding.left}, ${heatmapPadding.top +

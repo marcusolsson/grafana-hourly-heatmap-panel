@@ -35,9 +35,10 @@ const interpolators: ColorScaleLookup = {
   interpolateYlOrRd: d3.interpolateYlOrRd,
 };
 
+// makeSpectrumColorScale returns a sequential scale that maps numbers between
+// min and max, using a given color scheme.
 export const makeSpectrumColorScale = (scheme: string, min: number, max: number): d3.ScaleSequential<string> => {
-  const interpolator = interpolators[scheme];
-  return d3.scaleSequential(interpolator).domain([max, min]);
+  return d3.scaleSequential(interpolators[scheme]).domain([max, min]);
 };
 
 interface InterpolatorLookup {
@@ -52,6 +53,9 @@ const interpolationMap: InterpolatorLookup = {
   cubehelix: d3.interpolateCubehelix,
 };
 
+// makeCustomColorScale returns a linear scale that maps numbers between min and
+// max. Instead of using a predefined D3 interpolator, the color scheme is
+// created from a thresholds configuration.
 export const makeCustomColorScale = (colorSpace: string, min: number, max: number, thresholds: ThresholdsConfig) => {
   const interpolator = interpolationMap[colorSpace];
   const colorRange = thresholds.steps.map(({ color }) => color);
@@ -64,6 +68,8 @@ export const makeCustomColorScale = (colorSpace: string, min: number, max: numbe
       .interpolate(interpolator);
   }
 
+  // If the thresholds mode is `percentage`, we first need to map the percentage
+  // from [0, 100] to [min, max].
   const scale = d3
     .scaleLinear()
     .domain([0, 100])

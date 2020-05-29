@@ -13,6 +13,9 @@ interface HeatmapAxesProps {
   dailyInterval: [number, number];
 }
 
+/**
+ * HeatmapAxes draws a X and Y axis for the heatmap chart.
+ */
 export const HeatmapAxes: React.FC<HeatmapAxesProps> = ({
   values,
   from,
@@ -23,26 +26,9 @@ export const HeatmapAxes: React.FC<HeatmapAxesProps> = ({
   timeZone,
   dailyInterval,
 }) => {
-  const x = d3
-    .scaleBand()
-    .domain(values)
-    .rangeRound([0, width]);
-
-  const xAxis: any = createResponsiveTimeAxis(x, from, to, width, numDays, timeZone);
-
-  const y = d3
-    .scaleLinear()
-    .domain(dailyInterval)
-    .rangeRound([0, height]);
-
-  const preferredTickHeight = 20;
-  const ratio = (preferredTickHeight / height) * 24;
-  let every = Math.max(Math.round(ratio), 1);
-
-  const yAxis: any = d3
-    .axisLeft(y)
-    .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
-    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
+  // Create each individual axis.
+  const xAxis: any = createResponsiveXAxis(values, from, to, width, numDays, timeZone);
+  const yAxis: any = createResponsiveYAxis(height, dailyInterval);
 
   return (
     <>
@@ -71,17 +57,22 @@ export const HeatmapAxes: React.FC<HeatmapAxesProps> = ({
   );
 };
 
-// createResponsiveTimeAxis returns a horizontal axis that uses the provided
+// createResponsiveXAxis returns a horizontal axis that uses the provided
 // band scale for smaller interval, and falls back to a time scale for larger
 // intervals.
-const createResponsiveTimeAxis = (
-  bandScale: any,
+const createResponsiveXAxis = (
+  values: string[],
   from: DateTime,
   to: DateTime,
   width: number,
   numDays: number,
   timeZone: string
 ) => {
+  const x = d3
+    .scaleBand()
+    .domain(values)
+    .rangeRound([0, width]);
+
   const xTime = d3
     .scaleTime()
     .domain([from.toDate(), to.toDate()])
@@ -97,9 +88,25 @@ const createResponsiveTimeAxis = (
     .ticks(d3.timeDay, every)
     .tickFormat(d => dateTimeFormat(dateTime(d as number), { timeZone, format: 'MM/DD' }));
 
-  const xCategoryAxis = d3.axisBottom(bandScale);
+  const xCategoryAxis = d3.axisBottom(x);
 
   return every > 1 ? xTimeAxis : xCategoryAxis;
+};
+
+const createResponsiveYAxis = (height: number, dailyInterval: [number, number]) => {
+  const preferredTickHeight = 20;
+  const ratio = (preferredTickHeight / height) * 24;
+  let every = Math.max(Math.round(ratio), 1);
+
+  const y = d3
+    .scaleLinear()
+    .domain(dailyInterval)
+    .rangeRound([0, height]);
+
+  return d3
+    .axisLeft(y)
+    .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
+    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
 };
 
 const formatDuration = (duration: DateTimeDuration, format: string) => {

@@ -8,6 +8,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
 const timeFormat = 'MM/DD';
+const minutesPerDay = 24 * 60;
 
 interface HeatmapProps {
   values: string[];
@@ -33,25 +34,28 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   timeZone,
   dailyInterval,
 }) => {
+  // Maps columns (days) to a position along the X axis.
   const x = d3
     .scaleBand()
     .domain(values)
     .rangeRound([0, width]);
 
-  const dailyIntervalMinutes = hoursToMinutesInterval(dailyInterval);
+  const cellWidth = Math.ceil(x.bandwidth());
+
+  // The interval of hours to display is given in hours, but since we want to
+  // map buckets on a minute basis, we first need to convert the interval to
+  // minutes.
+  const dailyIntervalMinutes = [dailyInterval[0] * 60, dailyInterval[1] * 60];
 
   const y = d3
     .scaleLinear()
     .domain(dailyIntervalMinutes)
     .rangeRound([0, height]);
 
-  const minutesPerDay = 24 * 60;
-
+  // Calculate the height of each cell.
   const minutesPerBucket = minutesPerDay / numBuckets;
   const intervalMinutes = dailyIntervalMinutes[1] - dailyIntervalMinutes[0];
   const pixelsPerBucket = height / (intervalMinutes / minutesPerBucket);
-
-  const cellWidth = Math.ceil(x.bandwidth());
   const cellHeight = Math.ceil(pixelsPerBucket);
 
   // Generates a tooltip for a data point.
@@ -75,20 +79,24 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   return (
     <g>
       {data.points.map(d => {
+        // The display processor formats the value based on field
+        // configuration, such as the unit and number of decimals.
         const displayValue = data.displayProcessor(d.value);
 
-        const day = dateTimeParse(d.dayMillis, { timeZone: timeZone }).format(timeFormat);
+        const startOfDay = dateTimeParse(d.dayMillis, { timeZone });
+        const startOfBucketTime = dateTimeParse(d.bucketStartMillis, { timeZone });
 
-        const bucketTime = dateTimeParse(d.bucketStartMillis, { timeZone: timeZone });
-
-        const bucket =
-          (bucketTime.hour ? bucketTime.hour() : 0.0) * 60 + (bucketTime.minute ? bucketTime.minute() : 0.0);
+        // The Y value of the cell is the number of elapsed minutes since the
+        // start of the day.
+        const startOfBucketMinute =
+          (startOfBucketTime.hour ? startOfBucketTime.hour() : 0.0) * 60 +
+          (startOfBucketTime.minute ? startOfBucketTime.minute() : 0.0);
 
         return (
           <Tippy content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)} placement="bottom">
             <rect
-              x={x(day)}
-              y={Math.ceil(y(bucket))}
+              x={x(startOfDay.format(timeFormat))}
+              y={Math.ceil(y(startOfBucketMinute))}
               fill={colorScale(d.value)}
               width={cellWidth}
               height={cellHeight}
@@ -98,11 +106,4 @@ export const Heatmap: React.FC<HeatmapProps> = ({
       })}
     </g>
   );
-};
-
-const hoursToMinutesInterval = (intervalHours: [number, number]): [number, number] => {
-  const from = intervalHours[0];
-  const to = intervalHours[1] === 0 ? 24 : intervalHours[1];
-
-  return [from * 60, to * 60];
 };
