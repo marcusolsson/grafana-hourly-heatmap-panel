@@ -22,32 +22,77 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   // `options` contains the properties defined in the `HeatmapOptions` object.
   const { showLegend, from, to } = options;
 
-  // Only get the first series if the query returned more than one.
-  const frame = data.series[0];
-
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
-  // Create a histogram for each day. This builds the main data structure that
-  // we'll use for the heatmap visualization.
-  const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
+  // The panel consists of two main parts, the main chart area, and the legend.
+  // We use SVG groups, `g`, to translate the elements into place.
+  return (
+    <svg width={width} height={height}>
+      {data.series.map((frame, i) => {
+        const segmentHeight = height / data.series.length;
 
-  // Get custom fields options. For now, we use the configuration in the first
-  // numeric field in the data frame.
-  const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
-  const colorScheme = fieldConfig.colorScheme;
-  const colorSpace = fieldConfig.colorSpace;
-  const thresholds: ThresholdsConfig = fieldConfig.thresholds || {
-    mode: ThresholdsMode.Percentage,
-    steps: [],
-  };
+        // Create a histogram for each day. This builds the main data structure that
+        // we'll use for the heatmap visualization.
+        const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
 
-  // Create the scale we'll be using to map values to colors.
-  let scale =
-    colorScheme === 'custom'
-      ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
-      : makeSpectrumColorScale(colorScheme, bucketData.min, bucketData.max);
+        // Get custom fields options. For now, we use the configuration in the first
+        // numeric field in the data frame.
+        const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
+        const colorScheme = fieldConfig.colorScheme;
+        const colorSpace = fieldConfig.colorSpace;
+        const thresholds: ThresholdsConfig = fieldConfig.thresholds || {
+          mode: ThresholdsMode.Percentage,
+          steps: [],
+        };
 
+        // Create the scale we'll be using to map values to colors.
+        let scale =
+          colorScheme === 'custom'
+            ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
+            : makeSpectrumColorScale(colorScheme, bucketData.min, bucketData.max);
+
+        return (
+          <g transform={`translate(0, ${i * segmentHeight})`}>
+            <HeatmapContainer
+              width={width}
+              height={segmentHeight}
+              showLegend={showLegend}
+              bucketData={bucketData}
+              scale={scale}
+              timeZone={timeZone}
+              dailyIntervalHours={dailyIntervalHours}
+              thresholds={thresholds}
+            />
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+interface FooProps {
+  width: number;
+  height: number;
+
+  showLegend: boolean;
+  bucketData: any;
+  scale: any;
+  timeZone: string;
+  dailyIntervalHours: [number, number];
+  thresholds: ThresholdsConfig;
+}
+
+const HeatmapContainer: React.FC<FooProps> = ({
+  width,
+  height,
+  showLegend,
+  bucketData,
+  scale,
+  timeZone,
+  dailyIntervalHours,
+  thresholds,
+}) => {
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
   const legendWidth = width - (legendPadding.left + legendPadding.right);
@@ -61,10 +106,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
     (heatmapPadding.top + heatmapPadding.bottom) -
     (showLegend ? legendHeight + legendPadding.top + legendPadding.bottom : 0.0);
 
-  // The panel consists of two main parts, the main chart area, and the legend.
-  // We use SVG groups, `g`, to translate the elements into place.
   return (
-    <svg width={width} height={height}>
+    <>
       <g transform={`translate(${heatmapPadding.left}, ${heatmapPadding.top})`}>
         <HeatmapChart
           data={bucketData}
@@ -94,6 +137,6 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
           />
         </g>
       ) : null}
-    </svg>
+    </>
   );
 };
