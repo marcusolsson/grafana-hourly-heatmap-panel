@@ -71,7 +71,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   );
 };
 
-interface FooProps {
+interface HeatmapContainerProps {
   width: number;
   height: number;
 
@@ -83,7 +83,11 @@ interface FooProps {
   thresholds: ThresholdsConfig;
 }
 
-const HeatmapContainer: React.FC<FooProps> = ({
+/**
+ * HeatmapContainer is used to support multiple queries. A HeatmapContainer is
+ * created for each query.
+ */
+const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   width,
   height,
   showLegend,
