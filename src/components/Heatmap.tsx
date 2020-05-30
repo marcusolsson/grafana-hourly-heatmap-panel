@@ -38,7 +38,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   const x = d3
     .scaleBand()
     .domain(values)
-    .rangeRound([0, width]);
+    .range([0, width]);
 
   const cellWidth = Math.ceil(x.bandwidth());
 
@@ -50,7 +50,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   const y = d3
     .scaleLinear()
     .domain(dailyIntervalMinutes)
-    .rangeRound([0, height]);
+    .range([0, height]);
 
   // Calculate the height of each cell.
   const minutesPerBucket = minutesPerDay / numBuckets;
