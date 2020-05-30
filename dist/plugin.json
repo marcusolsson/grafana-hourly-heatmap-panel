@@ -1,0 +1,34 @@
+{
+  "type": "panel",
+  "name": "Hourly heatmap",
+  "id": "marcusolsson-hourly-heatmap-panel",
+  "info": {
+    "description": "",
+    "author": {
+      "name": "Marcus Olsson",
+      "url": "https://github.com/marcusolsson"
+    },
+    "keywords": [],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/marcusolsson/grafana-hourly-heatmap-panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/marcusolsson/grafana-hourly-heatmap-panel/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "0.1.0",
+    "updated": "2020-05-30"
+  },
+  "dependencies": {
+    "grafanaVersion": "7.0.x",
+    "plugins": []
+  }
+}
