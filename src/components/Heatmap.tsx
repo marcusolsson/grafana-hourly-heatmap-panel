@@ -78,7 +78,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
 
   return (
     <g>
-      {data.points.map(d => {
+      {data.points.map((d, i) => {
         // The display processor formats the value based on field
         // configuration, such as the unit and number of decimals.
         const displayValue = data.displayProcessor(d.value);
@@ -93,7 +93,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           (startOfBucketTime.minute ? startOfBucketTime.minute() : 0.0);
 
         return (
-          <Tippy content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)} placement="bottom">
+          <Tippy key={i} content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)} placement="bottom">
             <rect
               x={x(startOfDay.format(timeFormat))}
               y={Math.ceil(y(startOfBucketMinute))}

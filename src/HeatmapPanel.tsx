@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
+import { DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
 import { bucketize } from './bucket';
 import { HeatmapOptions } from './types';
@@ -30,37 +30,15 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
       {data.series.map((frame, i) => {
         const segmentHeight = height / data.series.length;
 
-        // Create a histogram for each day. This builds the main data structure that
-        // we'll use for the heatmap visualization.
-        const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
-
-        // Get custom fields options. For now, we use the configuration in the first
-        // numeric field in the data frame.
-        const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
-        const colorPalette = fieldConfig.colorPalette;
-        const colorSpace = fieldConfig.colorSpace;
-        const thresholds: ThresholdsConfig = fieldConfig.thresholds || {
-          mode: ThresholdsMode.Percentage,
-          steps: [],
-        };
-
-        // Create the scale we'll be using to map values to colors.
-        let scale =
-          colorPalette === 'custom'
-            ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
-            : makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max);
-
         return (
           <g transform={`translate(0, ${i * segmentHeight})`}>
             <HeatmapContainer
               width={width}
               height={segmentHeight}
               showLegend={showLegend}
-              bucketData={bucketData}
-              scale={scale}
+              frame={frame}
               timeZone={timeZone}
               dailyIntervalHours={dailyIntervalHours}
-              thresholds={thresholds}
             />
           </g>
         );
@@ -74,27 +52,43 @@ interface HeatmapContainerProps {
   height: number;
 
   showLegend: boolean;
-  bucketData: any;
-  scale: any;
+  frame: DataFrame;
   timeZone: string;
   dailyIntervalHours: [number, number];
-  thresholds: ThresholdsConfig;
 }
 
 /**
  * HeatmapContainer is used to support multiple queries. A HeatmapContainer is
  * created for each query.
  */
-const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
+export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   width,
   height,
   showLegend,
-  bucketData,
-  scale,
+  frame,
   timeZone,
   dailyIntervalHours,
-  thresholds,
 }) => {
+  // Create a histogram for each day. This builds the main data structure that
+  // we'll use for the heatmap visualization.
+  const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
+
+  // Get custom fields options. For now, we use the configuration in the first
+  // numeric field in the data frame.
+  const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
+  const colorPalette = fieldConfig.colorPalette;
+  const colorSpace = fieldConfig.colorSpace;
+  const thresholds: ThresholdsConfig = fieldConfig.thresholds || {
+    mode: ThresholdsMode.Percentage,
+    steps: [],
+  };
+
+  // Create the scale we'll be using to map values to colors.
+  let scale =
+    colorPalette === 'custom'
+      ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
+      : makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max);
+
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
   const legendWidth = width - (legendPadding.left + legendPadding.right);
@@ -134,7 +128,6 @@ const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
             min={bucketData.min}
             max={bucketData.max}
             display={bucketData.displayProcessor}
-            thresholds={thresholds}
             colorScale={scale}
           />
         </g>

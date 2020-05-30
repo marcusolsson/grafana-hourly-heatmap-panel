@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ThresholdsConfig, DisplayProcessor } from '@grafana/data';
+import { DisplayProcessor } from '@grafana/data';
 import { ColorSpectrum } from './ColorSpectrum';
 import { LegendAxis } from './LegendAxis';
 
@@ -10,7 +10,6 @@ interface LegendProps {
   min: number;
   max: number;
   display: DisplayProcessor;
-  thresholds: ThresholdsConfig;
   colorScale: any;
 }
 

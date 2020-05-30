@@ -15,7 +15,7 @@ export interface Props {
  * ColorSpectrum draws a SVG color spectrum using a given color scale.
  */
 export const ColorSpectrum: React.FC<Props> = ({ width, height, colorScale, min, max }) => {
-  const stepSize = 5;
+  const stepSize = 20;
 
   // Divide the spectrum into segments of equal size.
   const positionRange = d3.range(0, width, stepSize);
@@ -28,8 +28,8 @@ export const ColorSpectrum: React.FC<Props> = ({ width, height, colorScale, min,
 
   return (
     <g>
-      {positionRange.map(pos => {
-        return <rect x={pos} width={stepSize} height={height} fill={colorScale(valueScale(pos))} />;
+      {positionRange.map((pos, i) => {
+        return <rect key={i} x={pos} width={stepSize} height={height} fill={colorScale(valueScale(pos))} />;
       })}
     </g>
   );
