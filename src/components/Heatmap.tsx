@@ -93,7 +93,12 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           (startOfBucketTime.minute ? startOfBucketTime.minute() : 0.0);
 
         return (
-          <Tippy key={i} content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)} placement="bottom">
+          <Tippy
+            key={i}
+            content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)}
+            placement="bottom"
+            animation={false}
+          >
             <rect
               x={x(startOfDay.format(timeFormat))}
               y={Math.ceil(y(startOfBucketMinute))}
