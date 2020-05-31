@@ -39,11 +39,8 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
     bottom: 20,
   };
 
-  // Hide axes for small panels.
-  const showAxes = width > 250;
-
-  const chartWidth = width - (showAxes ? offset.left : 0.0);
-  const chartHeight = height - (showAxes ? offset.top + offset.bottom : 0.0);
+  const chartWidth = width - offset.left;
+  const chartHeight = height - (offset.top + offset.bottom);
 
   // Find the first and last day in the dataset.
   const [begin, end] = d3.extent(
@@ -72,38 +69,22 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
     );
   }
 
-  const heatMap = (
-    <Heatmap
-      data={data}
-      numBuckets={data.numBuckets}
-      values={values}
-      width={chartWidth}
-      height={chartHeight}
-      colorScale={colorScale}
-      timeZone={timeZone}
-      dailyInterval={dailyInterval}
-    />
-  );
-
   return (
-    <>
-      {showAxes ? (
-        <g transform={`translate(${offset.left}, ${offset.top})`}>
-          <XAxis
-            values={values}
-            from={firstDay}
-            to={lastDay}
-            width={chartWidth}
-            height={chartHeight}
-            numDays={numDays}
-            timeZone={timeZone}
-          />
-          <YAxis height={chartHeight} dailyInterval={dailyInterval} />
-          {heatMap}
-        </g>
-      ) : (
-        heatMap
-      )}
-    </>
+    <g transform={`translate(${offset.left}, ${offset.top})`}>
+      <g transform={`translate(0, ${chartHeight})`}>
+        <XAxis values={values} from={firstDay} to={lastDay} width={chartWidth} numDays={numDays} timeZone={timeZone} />
+      </g>
+      <YAxis height={chartHeight} dailyInterval={dailyInterval} />
+      <Heatmap
+        data={data}
+        numBuckets={data.numBuckets}
+        values={values}
+        width={chartWidth}
+        height={chartHeight}
+        colorScale={colorScale}
+        timeZone={timeZone}
+        dailyInterval={dailyInterval}
+      />
+    </g>
   );
 };

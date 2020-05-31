@@ -8,7 +8,17 @@ interface YAxisProps {
 }
 
 export const YAxis: React.FC<YAxisProps> = ({ height, dailyInterval }) => {
-  const yAxis: any = createResponsiveYAxis(height, dailyInterval);
+  const y = d3
+    .scaleLinear()
+    .domain(dailyInterval)
+    .rangeRound([0, height]);
+
+  const every = calculateTickHeight(height);
+
+  const yAxis: any = d3
+    .axisLeft(y)
+    .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
+    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
 
   return (
     <g
@@ -23,20 +33,10 @@ export const YAxis: React.FC<YAxisProps> = ({ height, dailyInterval }) => {
   );
 };
 
-const createResponsiveYAxis = (height: number, dailyInterval: [number, number]) => {
+const calculateTickHeight = (height: number) => {
   const preferredTickHeight = 20;
   const ratio = (preferredTickHeight / height) * 24;
-  let every = Math.max(Math.round(ratio), 1);
-
-  const y = d3
-    .scaleLinear()
-    .domain(dailyInterval)
-    .rangeRound([0, height]);
-
-  return d3
-    .axisLeft(y)
-    .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
-    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
+  return Math.max(Math.round(ratio), 1);
 };
 
 const formatDuration = (duration: DateTimeDuration, format: string) => {
