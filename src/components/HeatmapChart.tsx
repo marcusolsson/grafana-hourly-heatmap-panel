@@ -4,7 +4,8 @@ import * as d3 from 'd3';
 import { dateTime, dateTimeParse } from '@grafana/data';
 
 import { BucketData } from '../bucket';
-import { HeatmapAxes } from './HeatmapAxes';
+import { XAxis } from './XAxis';
+import { YAxis } from './YAxis';
 import { Heatmap } from './Heatmap';
 
 const timeFormat = 'MM/DD';
@@ -88,16 +89,16 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
     <>
       {showAxes ? (
         <g transform={`translate(${offset.left}, ${offset.top})`}>
-          <HeatmapAxes
+          <XAxis
             values={values}
             from={firstDay}
             to={lastDay}
-            numDays={numDays}
             width={chartWidth}
             height={chartHeight}
+            numDays={numDays}
             timeZone={timeZone}
-            dailyInterval={dailyInterval}
           />
+          <YAxis height={chartHeight} dailyInterval={dailyInterval} />
           {heatMap}
         </g>
       ) : (
