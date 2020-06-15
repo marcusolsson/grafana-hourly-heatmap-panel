@@ -3,7 +3,7 @@
   "name": "Hourly heatmap",
   "id": "marcusolsson-hourly-heatmap-panel",
   "info": {
-    "description": "",
+    "description": "Hourly heatmap panel for Grafana.",
     "author": {
       "name": "Marcus Olsson",
       "url": "https://github.com/marcusolsson"

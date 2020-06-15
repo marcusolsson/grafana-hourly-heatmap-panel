@@ -8,7 +8,33 @@ A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
 An hourly heatmap aggregates data into buckets by day and hour to analyze activity or traffic during the day.
 
-<img src="https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/screenshot.png" />
+![Screenshot](https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/screenshot.png)
+
+## Configuration
+
+### Query
+
+The Hourly Heatmap panel expects a query that returns a **time** field, and a **number** field.
+
+The name of each field doesn't matter—the panel selects the first field of each required type.
+
+### Display options
+
+- **From** and **To** lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic.
+- **Show legend** toggles the color spectrum.
+
+### Field options
+
+#### Custom options
+
+- **Group by** sets the size of each bucket.
+- **Calculation** sets calculation to use for reducing data within a bucket.
+- **Color palette** sets the colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own.
+
+#### Standard options
+
+- **Min** and **Max** sets the interval used for color mapping. Any data outside this interval will be clamped.
+- **Decimals** and **Unit** sets the textual format of each value.
 
 ## Motivation
 

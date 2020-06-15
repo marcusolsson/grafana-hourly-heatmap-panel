@@ -1,7 +1,7 @@
 {
   "name": "grafana-hourly-heatmap-panel",
   "version": "0.3.1",
-  "description": "A hourly heatmap panel plugin for Grafana",
+  "description": "An hourly heatmap panel plugin for Grafana.",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
