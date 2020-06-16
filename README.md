@@ -8,7 +8,7 @@ A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
 An hourly heatmap aggregates data into buckets by day and hour to analyze activity or traffic during the day.
 
-![Screenshot](https://github.com/marcusolsson/grafana-heatmap-panel/blob/master/docs/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/marcusolsson/grafana-hourly-heatmap-panel/master/docs/screenshot.png)
 
 ## Configuration
 
