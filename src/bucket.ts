@@ -124,8 +124,8 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
     displayProcessor: valueField?.display ? valueField?.display : defaultDisplay,
     points: points,
-    min: valueField?.config.min || Number.NEGATIVE_INFINITY,
-    max: valueField?.config.max || Number.POSITIVE_INFINITY,
+    min: valueField?.config.min ?? Number.NEGATIVE_INFINITY,
+    max: valueField?.config.max ?? Number.POSITIVE_INFINITY,
   };
 };
 
