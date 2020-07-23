@@ -30,6 +30,7 @@ The name of each field doesn't matter—the panel selects the first field of eac
 - **Group by** sets the size of each bucket.
 - **Calculation** sets calculation to use for reducing data within a bucket.
 - **Color palette** sets the colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own.
+- **Invert color palette** inverts the currently selected color palette. This doesnot apply to **Custom** palette. 
 
 #### Standard options
 
