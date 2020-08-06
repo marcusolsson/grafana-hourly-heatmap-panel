@@ -33,7 +33,7 @@ export interface BucketData {
 const reduce = (agg: PointSet[], calculation: (n: Array<number | undefined>) => number): Point[] => {
   return agg.map(({ time, values }) => ({
     time: time,
-    value: calculation(values.map(({ value }) => value)),
+    value: calculation(values.map(({ value }) => value))
   }));
 };
 
@@ -45,7 +45,7 @@ export const groupByMinutes = (points: Point[], minutes: number, timeZone: strin
     intervalStart.subtract(intervalStart.minute ? intervalStart.minute() % minutes : 0.0, 'minutes');
 
     return {
-      [intervalStart.valueOf()]: point,
+      [intervalStart.valueOf()]: point
     };
   });
 
@@ -58,7 +58,7 @@ export const groupByMinutes = (points: Point[], minutes: number, timeZone: strin
     }, {})
   ).map(([key, values]) => ({
     time: parseFloat(key),
-    values: values as Point[],
+    values: values as Point[]
   }));
 };
 
@@ -67,7 +67,7 @@ export const groupByDay = (points: Point[], timeZone: string): PointSet[] => {
   const rounded = points.map(point => ({
     [dateTime(point.time)
       .startOf('day')
-      .valueOf()]: point,
+      .valueOf()]: point
   }));
 
   return Object.entries(
@@ -78,7 +78,7 @@ export const groupByDay = (points: Point[], timeZone: string): PointSet[] => {
     }, {})
   ).map(([key, values]) => ({
     time: parseFloat(key),
-    values: values as Point[],
+    values: values as Point[]
   }));
 };
 
@@ -96,7 +96,7 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
   // Convert data frame fields to rows.
   const rows = Array.from({ length: frame.length }, (v: any, i: number) => ({
     time: timeField?.values.get(i),
-    value: valueField?.values.get(i),
+    value: valueField?.values.get(i)
   }));
 
   const filteredRows = rows.filter(row => {
@@ -116,7 +116,7 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
     values.map(({ time, value }) => ({
       dayMillis: time,
       bucketStartMillis: time,
-      value,
+      value
     }))
   );
 
@@ -125,7 +125,7 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
     displayProcessor: valueField?.display ? valueField?.display : defaultDisplay,
     points: points,
     min: valueField?.config.min ?? Number.NEGATIVE_INFINITY,
-    max: valueField?.config.max ?? Number.POSITIVE_INFINITY,
+    max: valueField?.config.max ?? Number.POSITIVE_INFINITY
   };
 };
 
@@ -137,5 +137,5 @@ const calculations: any = {
   min: (vals: number[]) => d3.min(vals),
   max: (vals: number[]) => d3.max(vals),
   first: (vals: number[]) => vals[0],
-  last: (vals: number[]) => vals[vals.length - 1],
+  last: (vals: number[]) => vals[vals.length - 1]
 };

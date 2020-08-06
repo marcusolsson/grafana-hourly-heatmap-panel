@@ -32,7 +32,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   height,
   numBuckets,
   timeZone,
-  dailyInterval,
+  dailyInterval
 }) => {
   // Maps columns (days) to a position along the X axis.
   const x = d3

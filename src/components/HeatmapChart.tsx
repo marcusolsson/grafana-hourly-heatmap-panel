@@ -29,14 +29,14 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   height,
   colorScale,
   timeZone,
-  dailyInterval,
+  dailyInterval
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
   const offset = {
     top: 5,
     left: 35,
-    bottom: 20,
+    bottom: 20
   };
 
   const chartWidth = width - offset.left;

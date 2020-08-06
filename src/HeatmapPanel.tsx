@@ -67,7 +67,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   showLegend,
   frame,
   timeZone,
-  dailyIntervalHours,
+  dailyIntervalHours
 }) => {
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
@@ -77,11 +77,11 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   // numeric field in the data frame.
   const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
   const colorPalette = fieldConfig.colorPalette;
-  const invertPalette = fieldConfig.invertPalette; 
+  const invertPalette = fieldConfig.invertPalette;
   const colorSpace = fieldConfig.colorSpace;
   const thresholds: ThresholdsConfig = fieldConfig.thresholds ?? {
     mode: ThresholdsMode.Percentage,
-    steps: [],
+    steps: []
   };
 
   // Create the scale we'll be using to map values to colors.
