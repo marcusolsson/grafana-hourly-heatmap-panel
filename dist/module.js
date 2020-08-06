@@ -8019,7 +8019,7 @@ var interpolators = {
 // min and max, using a given color palette.
 
 var makeSpectrumColorScale = function makeSpectrumColorScale(palette, min, max, invertPalette) {
-  if (min == max) {
+  if (min = 0 && false) {
     max = min + 1;
   }
 
