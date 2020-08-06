@@ -8019,6 +8019,8 @@ var interpolators = {
 // min and max, using a given color palette.
 
 var makeSpectrumColorScale = function makeSpectrumColorScale(palette, min, max, invertPalette) {
+  console.log('Here : ', max, min);
+
   if (invertPalette) {
     return d3__WEBPACK_IMPORTED_MODULE_0__["scaleSequential"](interpolators[palette]).domain([max, min]);
   } else {

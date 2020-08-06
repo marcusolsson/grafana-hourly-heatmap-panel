@@ -43,6 +43,8 @@ export const makeSpectrumColorScale = (
   max: number,
   invertPalette: boolean
 ): d3.ScaleSequential<string> => {
+  console.log('Here : ', max, min);
+
   if (invertPalette) {
     return d3.scaleSequential(interpolators[palette]).domain([max, min]);
   } else {
