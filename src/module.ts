@@ -13,7 +13,7 @@ import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 const paletteNotSelected = (colorPalette: string) => (config: HeatmapFieldConfig) =>
-	config.colorPalette != colorPalette;
+	config.colorPalette !== colorPalette;
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
 	.useFieldConfig({
