@@ -77,7 +77,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   // numeric field in the data frame.
   const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
   const colorPalette = fieldConfig.colorPalette;
-  const invertPalette = fieldConfig.invertPalette; 
+  const invertPalette = fieldConfig.invertPalette;
   const colorSpace = fieldConfig.colorSpace;
   const thresholds: ThresholdsConfig = fieldConfig.thresholds ?? {
     mode: ThresholdsMode.Percentage,
