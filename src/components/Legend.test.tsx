@@ -6,7 +6,7 @@ import { Legend } from './Legend';
 
 describe('Legend', () => {
   it('renders the component', () => {
-    const colorScale = makeSpectrumColorScale('interpolateSpectral', 0, 100);
+    const colorScale = makeSpectrumColorScale('interpolateSpectral', 0, 100, true);
     const display = (t: number) => ({ numeric: t, text: t.toString() });
 
     const { asFragment } = render(

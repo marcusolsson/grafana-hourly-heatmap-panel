@@ -22,7 +22,7 @@ describe('HeatmapChart', () => {
         });
       }
     }
-    const colorScale = makeSpectrumColorScale('interpolateSpectral', 0, numDays * 24);
+    const colorScale = makeSpectrumColorScale('interpolateSpectral', 0, numDays * 24, true);
     const data = {
       numBuckets: 24,
       min: 0,

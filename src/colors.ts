@@ -37,8 +37,17 @@ const interpolators: ColorScaleLookup = {
 
 // makeSpectrumColorScale returns a sequential scale that maps numbers between
 // min and max, using a given color palette.
-export const makeSpectrumColorScale = (palette: string, min: number, max: number): d3.ScaleSequential<string> => {
-  return d3.scaleSequential(interpolators[palette]).domain([max, min]);
+export const makeSpectrumColorScale = (
+  palette: string,
+  min: number,
+  max: number,
+  invertPalette: boolean
+): d3.ScaleSequential<string> => {
+  if (invertPalette) {
+    return d3.scaleSequential(interpolators[palette]).domain([max, min]);
+  } else {
+    return d3.scaleSequential(interpolators[palette]).domain([min, max]);
+  }
 };
 
 interface InterpolatorLookup {

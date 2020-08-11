@@ -12,6 +12,8 @@ import { HeatmapPanel } from './HeatmapPanel';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
+const paletteNotSelected = (colorPalette: string) => (config: HeatmapFieldConfig) =>
+  config.colorPalette !== colorPalette;
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
@@ -52,6 +54,12 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
             options: [{ value: 'custom', label: 'Custom' }, ...predefinedColorPalettes],
           },
           defaultValue: 'interpolateSpectral',
+        })
+        .addBooleanSwitch({
+          path: 'invertPalette',
+          name: 'Invert Color Palette',
+          defaultValue: false,
+          showIf: paletteNotSelected('custom'),
         })
         .addSelect({
           path: 'colorSpace',

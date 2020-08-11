@@ -10,6 +10,7 @@ export interface HeatmapOptions {
 
 export interface HeatmapFieldConfig {
   colorPalette: string;
+  invertPalette: boolean;
 
   // Options for custom color palettes.
   colorSpace: string;
