@@ -10,6 +10,12 @@ An hourly heatmap aggregates data into buckets by day and hour to analyze activi
 
 ![Screenshot](https://raw.githubusercontent.com/marcusolsson/grafana-hourly-heatmap-panel/master/docs/screenshot.png)
 
+## Motivation
+
+The [carpet-plot](https://github.com/petrslavotinek/grafana-carpetplot) panel plugin is one of the most used plugins for Grafana. Unfortunately, it's no longer being actively maintained.
+
+Grafana 7.0 introduced a new plugin architecture based on React. Instead of migrating the original plugin from Angular, this is completely rewritten from scratch, using inspiration from the original plugin.
+
 ## Configuration
 
 ### Query
@@ -37,12 +43,10 @@ The name of each field doesn't matter—the panel selects the first field of eac
 - **Min** and **Max** sets the interval used for color mapping. Any data outside this interval will be clamped.
 - **Decimals** and **Unit** sets the textual format of each value.
 
-## Motivation
+## Troubleshooting
 
-The [carpet-plot](https://github.com/petrslavotinek/grafana-carpetplot) panel plugin is one of the most used plugins for Grafana. Unfortunately, it's no longer being actively maintained.
+### Missing data
 
-Grafana 7.0 introduced a new plugin architecture based on React. Instead of migrating the original plugin from Angular, this is completely rewritten from scratch, using inspiration from the original plugin.
+By default, data sources limits the number of data points to the width of the panel, in pixels. If you're visualizing data over a long time you may need to adjust the **Max data points** under **Query options** in the query editor.
 
-## License
-
-This plugin is licensed under the [Apache 2.0 License](LICENSE).
+![Missing data](src/img/missing-datapoints.png)
