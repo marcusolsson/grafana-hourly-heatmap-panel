@@ -47,6 +47,6 @@ The name of each field doesn't matter—the panel selects the first field of eac
 
 ### Missing data
 
-By default, data sources limits the number of data points to the width of the panel, in pixels. If you're visualizing data over a long time you may need to adjust the **Max data points** under **Query options** in the query editor.
+By default, data sources limits the number of data points to the width of the panel, in pixels. If you're visualizing data over a long time, then you may need to adjust the **Max data points** under **Query options** in the query editor.
 
 ![Missing data](src/img/missing-datapoints.png)
