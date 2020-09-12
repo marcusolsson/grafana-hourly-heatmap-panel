@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { dateTime, dateTimeParse, DataFrame, DisplayProcessor } from '@grafana/data';
+import { TimeRange, dateTime, dateTimeParse, DataFrame, DisplayProcessor } from '@grafana/data';
 
 export interface Point {
   time: number;
@@ -26,7 +26,8 @@ export interface BucketData {
   min: number;
   max: number;
   points: BucketPoint[];
-  displayProcessor: DisplayProcessor;
+  valueDisplay: DisplayProcessor;
+  timeDisplay: DisplayProcessor;
 }
 
 // reduce applies a calculation to an aggregated point set.
@@ -63,7 +64,7 @@ export const groupByMinutes = (points: Point[], minutes: number, timeZone: strin
 };
 
 // groupByDay works like to groupByDays but is a bit simpler.
-export const groupByDay = (points: Point[], timeZone: string): PointSet[] => {
+export const groupByDay = (points: Point[]): PointSet[] => {
   const rounded = points.map(point => ({
     [dateTime(point.time)
       .startOf('day')
@@ -86,7 +87,12 @@ const defaultDisplay: DisplayProcessor = (value: any) => ({ numeric: value, text
 const minutesPerDay = 24 * 60;
 
 // bucketize returns the main data structure used by the visualizations.
-export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [number, number]): BucketData => {
+export const bucketize = (
+  frame: DataFrame,
+  timeZone: string,
+  timeRange: TimeRange,
+  dailyInterval: [number, number]
+): BucketData => {
   // Use the first temporal field.
   const timeField = frame.fields.find(f => f.type === 'time');
 
@@ -99,12 +105,24 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
     value: valueField?.values.get(i),
   }));
 
-  const filteredRows = rows.filter(row => {
-    const dt = dateTimeParse(row.time, { timeZone });
-    const hour = dt.hour ? dt.hour() : 0.0;
+  // Convert time range to dashboard time zone.
+  const tzFrom = dateTimeParse(timeRange.from.valueOf(), { timeZone }).startOf('day');
+  const tzTo = dateTimeParse(timeRange.to.valueOf(), { timeZone }).endOf('day');
 
-    return dailyInterval[0] <= hour && hour < dailyInterval[1];
-  });
+  const extents = [tzFrom.startOf('day'), tzTo.endOf('day')];
+
+  const filteredRows = rows
+    .filter(row => {
+      // Filter points within time range.
+      const curr = dateTimeParse(row.time, { timeZone });
+      return extents[0].valueOf() <= curr.valueOf() && curr.valueOf() < extents[1].valueOf();
+    })
+    .filter(row => {
+      // Filter rows within interval.
+      const dt = dateTimeParse(row.time, { timeZone });
+      const hour = dt.hour ? dt.hour() : 0.0;
+      return dailyInterval[0] <= hour && hour < dailyInterval[1];
+    });
 
   // Extract the field configuration..
   const customData = valueField?.config.custom;
@@ -112,7 +130,7 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
   // Group and reduce values.
   const groupedByMinutes = groupByMinutes(filteredRows, customData.groupBy, timeZone);
   const reducedMinutes = reduce(groupedByMinutes, calculations[customData.calculation]);
-  const points = groupByDay(reducedMinutes, timeZone).flatMap(({ time, values }) =>
+  const points = groupByDay(reducedMinutes).flatMap(({ time, values }) =>
     values.map(({ time, value }) => ({
       dayMillis: time,
       bucketStartMillis: time,
@@ -122,10 +140,11 @@ export const bucketize = (frame: DataFrame, timeZone: string, dailyInterval: [nu
 
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
-    displayProcessor: valueField?.display ? valueField?.display : defaultDisplay,
     points: points,
     min: valueField?.config.min ?? Number.NEGATIVE_INFINITY,
     max: valueField?.config.max ?? Number.POSITIVE_INFINITY,
+    valueDisplay: valueField?.display ? valueField?.display : defaultDisplay,
+    timeDisplay: timeField?.display ? timeField?.display : defaultDisplay,
   };
 };
 

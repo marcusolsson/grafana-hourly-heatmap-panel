@@ -11,7 +11,7 @@ describe('Legend', () => {
 
     const { asFragment } = render(
       <svg xmlns="http://www.w3.org/2000/svg">
-        <Legend width={300} height={100} colorScale={colorScale} min={0} max={100} display={display} />
+        <Legend width={300} height={100} colorScale={colorScale} min={0} max={100} valueDisplay={display} />
       </svg>
     );
     expect(asFragment()).toMatchSnapshot();

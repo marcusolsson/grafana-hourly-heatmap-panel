@@ -9,14 +9,14 @@ interface LegendProps {
   height: number;
   min: number;
   max: number;
-  display: DisplayProcessor;
+  valueDisplay: DisplayProcessor;
   colorScale: any;
 }
 
 /**
  * Legend with a color spectrum mapped between a minimum and a maximum value.
  */
-export const Legend: React.FC<LegendProps> = ({ width, height, min, max, display, colorScale }) => {
+export const Legend: React.FC<LegendProps> = ({ width, height, min, max, valueDisplay: display, colorScale }) => {
   const legendHeight = 20;
   const spectrumHeight = height - legendHeight;
 

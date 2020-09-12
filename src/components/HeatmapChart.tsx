@@ -1,14 +1,11 @@
 import React from 'react';
-import * as d3 from 'd3';
 
-import { dateTime, dateTimeParse } from '@grafana/data';
+import { dateTimeParse, TimeRange, dateTime } from '@grafana/data';
 
 import { BucketData } from '../bucket';
 import { XAxis } from './XAxis';
 import { YAxis } from './YAxis';
 import { Heatmap } from './Heatmap';
-
-const timeFormat = 'MM/DD';
 
 interface HeatmapChartProps {
   data: BucketData;
@@ -16,6 +13,7 @@ interface HeatmapChartProps {
   height: number;
   colorScale: any;
   timeZone: string;
+  timeRange: TimeRange;
   dailyInterval: [number, number];
 }
 
@@ -29,6 +27,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   height,
   colorScale,
   timeZone,
+  timeRange,
   dailyInterval,
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
@@ -42,37 +41,26 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   const chartWidth = width - offset.left;
   const chartHeight = height - (offset.top + offset.bottom);
 
-  // Find the first and last day in the dataset.
-  const [begin, end] = d3.extent(
-    data.points.map(({ dayMillis }) =>
-      dateTimeParse(dayMillis, { timeZone })
-        .startOf('day')
-        .valueOf()
-    )
-  );
+  const tzFrom = dateTimeParse(timeRange.from.valueOf(), { timeZone }).startOf('day');
+  const tzTo = dateTimeParse(timeRange.to.valueOf(), { timeZone }).endOf('day');
 
-  // Create the values for the X axis.
-  const firstDay = dateTimeParse(begin || Date.now(), { timeZone });
-  const lastDay = dateTimeParse(end || Date.now(), { timeZone });
-
-  const numDays = lastDay.add(1, 'day').diff(firstDay, 'days');
+  const numDays = tzTo.diff(tzFrom, 'days') + 1;
 
   // Generate time values for the X axis. These are used to center the dates on
   // the X axis under each day. Only used when the panel dimensions allow a
   // tick per day.
   let values: string[] = [];
   for (let i = 0; i < numDays; i++) {
-    values.push(
-      dateTime(firstDay)
-        .add(i, 'day')
-        .format(timeFormat)
-    );
+    const day = dateTime(tzFrom).add(i, 'day');
+    values.push(day.valueOf().toString());
   }
+
+  const dailyIntervalMinutes: [number, number] = [dailyInterval[0] * 60, dailyInterval[1] * 60];
 
   return (
     <g transform={`translate(${offset.left}, ${offset.top})`}>
       <g transform={`translate(0, ${chartHeight})`}>
-        <XAxis values={values} from={firstDay} to={lastDay} width={chartWidth} numDays={numDays} timeZone={timeZone} />
+        <XAxis values={values} from={tzFrom} to={tzTo} width={chartWidth} numDays={numDays} timeZone={timeZone} />
       </g>
       <YAxis height={chartHeight} dailyInterval={dailyInterval} />
       <Heatmap
@@ -83,7 +71,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
         height={chartHeight}
         colorScale={colorScale}
         timeZone={timeZone}
-        dailyInterval={dailyInterval}
+        dailyIntervalMinutes={dailyIntervalMinutes}
       />
     </g>
   );

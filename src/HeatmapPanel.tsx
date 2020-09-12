@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
+import { TimeRange, DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
 import { bucketize } from './bucket';
 import { HeatmapOptions } from './types';
@@ -18,7 +18,7 @@ interface Props extends PanelProps<HeatmapOptions> {}
  * `PanelProps`. The `PanelProps` object gives your component access to things
  * like query results, panel options, and the current timezone.
  */
-export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone }) => {
+export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone, timeRange }) => {
   // `options` contains the properties defined in the `HeatmapOptions` object.
   const { showLegend, from, to } = options;
 
@@ -38,6 +38,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               showLegend={showLegend}
               frame={frame}
               timeZone={timeZone}
+              timeRange={timeRange}
               dailyIntervalHours={dailyIntervalHours}
             />
           </g>
@@ -54,6 +55,7 @@ interface HeatmapContainerProps {
   showLegend: boolean;
   frame: DataFrame;
   timeZone: string;
+  timeRange: TimeRange;
   dailyIntervalHours: [number, number];
 }
 
@@ -67,11 +69,12 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   showLegend,
   frame,
   timeZone,
+  timeRange,
   dailyIntervalHours,
 }) => {
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = bucketize(frame, timeZone, dailyIntervalHours);
+  const bucketData = bucketize(frame, timeZone, timeRange, dailyIntervalHours);
 
   // Get custom fields options. For now, we use the configuration in the first
   // numeric field in the data frame.
@@ -112,6 +115,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
           height={heatmapHeight}
           colorScale={scale}
           timeZone={timeZone}
+          timeRange={timeRange}
           dailyInterval={dailyIntervalHours}
         />
       </g>
@@ -128,7 +132,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
             height={legendHeight}
             min={bucketData.min}
             max={bucketData.max}
-            display={bucketData.displayProcessor}
+            valueDisplay={bucketData.valueDisplay}
             colorScale={scale}
           />
         </g>

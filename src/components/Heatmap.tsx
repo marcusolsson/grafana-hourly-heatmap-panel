@@ -1,13 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { DateTime, dateTimeParse } from '@grafana/data';
+import { DisplayValue, DateTime, dateTimeParse } from '@grafana/data';
 
 import { BucketData } from '../bucket';
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
-const timeFormat = 'MM/DD';
 const minutesPerDay = 24 * 60;
 
 interface HeatmapProps {
@@ -18,7 +17,7 @@ interface HeatmapProps {
   height: number;
   numBuckets: number;
   timeZone: string;
-  dailyInterval: [number, number];
+  dailyIntervalMinutes: [number, number];
 }
 
 /**
@@ -32,76 +31,38 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   height,
   numBuckets,
   timeZone,
-  dailyInterval,
+  dailyIntervalMinutes,
 }) => {
-  // Maps columns (days) to a position along the X axis.
   const x = d3
     .scaleBand()
     .domain(values)
     .range([0, width]);
-
-  const cellWidth = Math.ceil(x.bandwidth());
-
-  // The interval of hours to display is given in hours, but since we want to
-  // map buckets on a minute basis, we first need to convert the interval to
-  // minutes.
-  const dailyIntervalMinutes = [dailyInterval[0] * 60, dailyInterval[1] * 60];
 
   const y = d3
     .scaleLinear()
     .domain(dailyIntervalMinutes)
     .range([0, height]);
 
-  // Calculate the height of each cell.
-  const minutesPerBucket = minutesPerDay / numBuckets;
-  const intervalMinutes = dailyIntervalMinutes[1] - dailyIntervalMinutes[0];
-  const pixelsPerBucket = height / (intervalMinutes / minutesPerBucket);
-  const cellHeight = Math.ceil(pixelsPerBucket);
-
-  // Generates a tooltip for a data point.
-  const tooltip = (day: DateTime, displayValue: any) => {
-    return (
-      <div>
-        <div>
-          {day.format('LL')} {day.format('LT')}&#8211;
-          {day.add(minutesPerDay / numBuckets, 'minute').format('LT')}
-        </div>
-        <div>
-          <strong>
-            {displayValue.text}
-            {displayValue.suffix ? displayValue.suffix : null}
-          </strong>
-        </div>
-      </div>
-    );
-  };
+  const cellWidth = Math.ceil(x.bandwidth());
+  const cellHeight = bucketHeight(height, numBuckets, dailyIntervalMinutes);
 
   return (
     <g>
       {data.points.map((d, i) => {
-        // The display processor formats the value based on field
-        // configuration, such as the unit and number of decimals.
-        const displayValue = data.displayProcessor(d.value);
-
-        const startOfDay = dateTimeParse(d.dayMillis, { timeZone });
-        const startOfBucketTime = dateTimeParse(d.bucketStartMillis, { timeZone });
-
-        // The Y value of the cell is the number of elapsed minutes since the
-        // start of the day.
-        const startOfBucketMinute =
-          (startOfBucketTime.hour ? startOfBucketTime.hour() : 0.0) * 60 +
-          (startOfBucketTime.minute ? startOfBucketTime.minute() : 0.0);
+        const startOfDay = dateTimeParse(d.dayMillis, { timeZone }).startOf('day');
+        const bucketStart = dateTimeParse(d.bucketStartMillis, { timeZone });
+        const minutesSinceStartOfDay = bucketStart.hour!() * 60 + bucketStart.minute!();
 
         return (
           <Tippy
             key={i}
-            content={tooltip(dateTimeParse(d.dayMillis, { timeZone }), displayValue)}
+            content={tooltip(bucketStart, data.valueDisplay(d.value), numBuckets, timeZone)}
             placement="bottom"
             animation={false}
           >
             <rect
-              x={x(startOfDay.format(timeFormat))}
-              y={Math.ceil(y(startOfBucketMinute))}
+              x={x(startOfDay.valueOf().toString())}
+              y={Math.ceil(y(minutesSinceStartOfDay))}
               fill={colorScale(d.value)}
               width={cellWidth}
               height={cellHeight}
@@ -111,4 +72,47 @@ export const Heatmap: React.FC<HeatmapProps> = ({
       })}
     </g>
   );
+};
+
+// Generates a tooltip for a data point.
+const tooltip = (bucketStartTime: DateTime, displayValue: DisplayValue, numBuckets: number, tz: string) => {
+  const localeOptionsDate = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: tz === 'browser' ? undefined : tz,
+  };
+  const localeOptionsTime = {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: tz === 'browser' ? undefined : tz,
+    timeZoneName: 'short',
+  };
+
+  const bucketDate = bucketStartTime.toDate().toLocaleDateString(undefined, localeOptionsDate);
+  const bucketStart = bucketStartTime.toDate().toLocaleTimeString(undefined, localeOptionsTime);
+  const bucketEnd = bucketStartTime
+    .add(minutesPerDay / numBuckets, 'minute')
+    .toDate()
+    .toLocaleTimeString(undefined, localeOptionsTime);
+
+  return (
+    <div>
+      <div>{bucketDate}</div>
+      <div>
+        {bucketStart}&#8211;{bucketEnd}:{' '}
+        <strong>
+          {displayValue.text}
+          {displayValue.suffix ? displayValue.suffix : null}
+        </strong>
+      </div>
+    </div>
+  );
+};
+
+const bucketHeight = (height: number, numBuckets: number, dailyIntervalMinutes: [number, number]) => {
+  const minutesPerBucket = minutesPerDay / numBuckets;
+  const intervalMinutes = dailyIntervalMinutes[1] - dailyIntervalMinutes[0];
+  const pixelsPerBucket = height / (intervalMinutes / minutesPerBucket);
+  return Math.ceil(pixelsPerBucket);
 };
