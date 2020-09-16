@@ -26,6 +26,6 @@
     "node": ">=12 <13"
   },
   "dependencies": {
-    "@tippyjs/react": "^4.0.2"
+    "@tippyjs/react": "^4.1.0"
   }
 }
