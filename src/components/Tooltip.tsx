@@ -11,7 +11,7 @@ interface TooltipProps {
 }
 
 // Generates a tooltip for a data point.
-export const Tooltip: React.FC<TooltipProps> =({ bucketStartTime, displayValue, numBuckets, tz }) => {
+export const Tooltip: React.FC<TooltipProps> = ({ bucketStartTime, displayValue, numBuckets, tz }) => {
   const localeOptionsDate = {
     year: 'numeric',
     month: 'long',
@@ -44,4 +44,4 @@ export const Tooltip: React.FC<TooltipProps> =({ bucketStartTime, displayValue, 
       </div>
     </div>
   );
-});
+};
