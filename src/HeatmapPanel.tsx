@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TimeRange, DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
 import { bucketize } from './bucket';
@@ -31,7 +31,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
         const segmentHeight = height / data.series.length;
 
         return (
-          <g transform={`translate(0, ${i * segmentHeight})`}>
+          <g key={i} transform={`translate(0, ${i * segmentHeight})`}>
             <HeatmapContainer
               width={width}
               height={segmentHeight}
@@ -74,7 +74,12 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
 }) => {
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = bucketize(frame, timeZone, timeRange, dailyIntervalHours);
+  const bucketData = useMemo(() => bucketize(frame, timeZone, timeRange, dailyIntervalHours), [
+    frame,
+    timeZone,
+    timeRange,
+    dailyIntervalHours,
+  ]);
 
   // Get custom fields options. For now, we use the configuration in the first
   // numeric field in the data frame.

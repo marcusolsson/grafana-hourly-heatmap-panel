@@ -93,6 +93,7 @@ export const bucketize = (
   timeRange: TimeRange,
   dailyInterval: [number, number]
 ): BucketData => {
+  console.log('render');
   // Use the first temporal field.
   const timeField = frame.fields.find(f => f.type === 'time');
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { DisplayValue, DateTime, dateTimeParse } from '@grafana/data';
+import { dateTimeParse } from '@grafana/data';
 
 import { BucketData } from '../bucket';
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
+import { Tooltip } from './Tooltip';
 const minutesPerDay = 24 * 60;
-
 interface HeatmapProps {
   values: string[];
   data: BucketData;
@@ -52,11 +52,21 @@ export const Heatmap: React.FC<HeatmapProps> = ({
         const startOfDay = dateTimeParse(d.dayMillis, { timeZone }).startOf('day');
         const bucketStart = dateTimeParse(d.bucketStartMillis, { timeZone });
         const minutesSinceStartOfDay = bucketStart.hour!() * 60 + bucketStart.minute!();
+        const displayValue = data.valueDisplay(d.value);
 
         return (
           <Tippy
             key={i}
-            content={tooltip(bucketStart, data.valueDisplay(d.value), numBuckets, timeZone)}
+            content={
+              <div>
+                <Tooltip
+                  bucketStartTime={bucketStart}
+                  displayValue={displayValue}
+                  numBuckets={numBuckets}
+                  tz={timeZone}
+                />
+              </div>
+            }
             placement="bottom"
             animation={false}
           >
@@ -71,42 +81,6 @@ export const Heatmap: React.FC<HeatmapProps> = ({
         );
       })}
     </g>
-  );
-};
-
-// Generates a tooltip for a data point.
-const tooltip = (bucketStartTime: DateTime, displayValue: DisplayValue, numBuckets: number, tz: string) => {
-  const localeOptionsDate = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: tz === 'browser' ? undefined : tz,
-  };
-  const localeOptionsTime = {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: tz === 'browser' ? undefined : tz,
-    timeZoneName: 'short',
-  };
-
-  const bucketDate = bucketStartTime.toDate().toLocaleDateString(undefined, localeOptionsDate);
-  const bucketStart = bucketStartTime.toDate().toLocaleTimeString(undefined, localeOptionsTime);
-  const bucketEnd = bucketStartTime
-    .add(minutesPerDay / numBuckets, 'minute')
-    .toDate()
-    .toLocaleTimeString(undefined, localeOptionsTime);
-
-  return (
-    <div>
-      <div>{bucketDate}</div>
-      <div>
-        {bucketStart}&#8211;{bucketEnd}:{' '}
-        <strong>
-          {displayValue.text}
-          {displayValue.suffix ? displayValue.suffix : null}
-        </strong>
-      </div>
-    </div>
   );
 };
 
