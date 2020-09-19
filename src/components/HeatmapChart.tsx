@@ -2,6 +2,7 @@ import React from 'react';
 
 import { dateTimeParse, TimeRange, dateTime } from '@grafana/data';
 
+import { TimeRegion } from '../TimeRegionEditor';
 import { BucketData } from '../bucket';
 import { XAxis } from './XAxis';
 import { YAxis } from './YAxis';
@@ -15,6 +16,7 @@ interface HeatmapChartProps {
   timeZone: string;
   timeRange: TimeRange;
   dailyInterval: [number, number];
+  regions: TimeRegion[];
 }
 
 /**
@@ -29,6 +31,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   timeZone,
   timeRange,
   dailyInterval,
+  regions,
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
@@ -72,6 +75,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
         colorScale={colorScale}
         timeZone={timeZone}
         dailyIntervalMinutes={dailyIntervalMinutes}
+        regions={regions}
       />
     </g>
   );
