@@ -135,7 +135,6 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         id: 'regions',
         path: 'regions',
         name: 'Time regions',
-        description: 'Display regions of time.',
         editor: TimeRegionEditor,
       });
   });
