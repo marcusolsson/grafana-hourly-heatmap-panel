@@ -4,6 +4,7 @@ import { TimeRange, DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } fr
 import { bucketize } from './bucket';
 import { HeatmapOptions } from './types';
 import { makeSpectrumColorScale, makeCustomColorScale } from './colors';
+import { TimeRegion } from './TimeRegionEditor';
 
 import { HeatmapChart } from './components/HeatmapChart';
 import { Legend } from './components/Legend';
@@ -20,7 +21,7 @@ interface Props extends PanelProps<HeatmapOptions> {}
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone, timeRange }) => {
   // `options` contains the properties defined in the `HeatmapOptions` object.
-  const { showLegend, from, to } = options;
+  const { regions, showLegend, from, to } = options;
 
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
@@ -40,6 +41,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               timeZone={timeZone}
               timeRange={timeRange}
               dailyIntervalHours={dailyIntervalHours}
+              regions={regions ?? []}
             />
           </g>
         );
@@ -57,6 +59,7 @@ interface HeatmapContainerProps {
   timeZone: string;
   timeRange: TimeRange;
   dailyIntervalHours: [number, number];
+  regions: TimeRegion[];
 }
 
 /**
@@ -71,6 +74,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   timeZone,
   timeRange,
   dailyIntervalHours,
+  regions,
 }) => {
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
@@ -122,6 +126,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
           timeZone={timeZone}
           timeRange={timeRange}
           dailyInterval={dailyIntervalHours}
+          regions={regions}
         />
       </g>
 

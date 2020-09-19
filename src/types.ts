@@ -1,8 +1,10 @@
 import { ThresholdsConfig } from '@grafana/data';
+import { TimeRegion } from './TimeRegionEditor';
 
 type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
 
 export interface HeatmapOptions {
+  regions: TimeRegion[];
   showLegend: boolean;
   from: string;
   to: string;

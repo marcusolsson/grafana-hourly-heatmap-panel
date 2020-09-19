@@ -8,6 +8,7 @@ import {
 } from '@grafana/data';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
+import { TimeRegionEditor } from './TimeRegionEditor';
 
 import * as d3 from 'd3';
 
@@ -129,6 +130,13 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         path: 'showLegend',
         name: 'Show legend',
         defaultValue: true,
+      })
+      .addCustomEditor({
+        id: 'regions',
+        path: 'regions',
+        name: 'Time regions',
+        description: 'Display regions of time.',
+        editor: TimeRegionEditor,
       });
   });
 
