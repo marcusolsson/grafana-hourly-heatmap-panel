@@ -84,10 +84,11 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
     timeRange,
     dailyIntervalHours,
   ]);
+  const numericField = frame.fields.find(field => field.type === 'number');
 
   // Get custom fields options. For now, we use the configuration in the first
   // numeric field in the data frame.
-  const fieldConfig = frame.fields.find(field => field.type === 'number')?.config.custom;
+  const fieldConfig = numericField?.config.custom;
   const colorPalette = fieldConfig.colorPalette;
   const invertPalette = fieldConfig.invertPalette;
   const colorSpace = fieldConfig.colorSpace;
