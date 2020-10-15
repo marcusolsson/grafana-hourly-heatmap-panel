@@ -1,6 +1,5 @@
 # Hourly Heatmap for Grafana
 
-[![CircleCI](https://circleci.com/gh/marcusolsson/grafana-hourly-heatmap-panel.svg?style=svg)](https://circleci.com/gh/marcusolsson/grafana-hourly-heatmap-panel)
 [![License](https://img.shields.io/github/license/marcusolsson/grafana-hourly-heatmap-panel)](LICENSE)
 [![PRs welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribute)
 
@@ -8,7 +7,7 @@ A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
 An hourly heatmap aggregates data into buckets by day and hour to analyze activity or traffic during the day.
 
-![Screenshot](https://raw.githubusercontent.com/marcusolsson/grafana-hourly-heatmap-panel/master/docs/screenshot.png)
+![Screenshot](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/raw/master/src/img/screenshot.png)
 
 ## Motivation
 
@@ -49,4 +48,4 @@ The name of each field doesn't matter—the panel selects the first field of eac
 
 By default, data sources limits the number of data points to the width of the panel, in pixels. If you're visualizing data over a long time, then you may need to adjust the **Max data points** under **Query options** in the query editor.
 
-![Missing data](src/img/missing-datapoints.png)
+![Missing data](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/raw/master/src/img/missing-datapoints.png)
