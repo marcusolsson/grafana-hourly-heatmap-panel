@@ -2,6 +2,8 @@
 
 [![License](https://img.shields.io/github/license/marcusolsson/grafana-hourly-heatmap-panel)](LICENSE)
 [![PRs welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribute)
+[![Build](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/workflows/CI/badge.svg)](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/actions?query=workflow%3A%22CI%22)
+[![Release](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/workflows/Release/badge.svg)](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/actions?query=workflow%3ARelease)
 
 A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
