@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TimeRange, DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
+import { TimeRange, Field, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
+import { useTheme } from '@grafana/ui';
 
 import { bucketize } from './bucket';
 import { HeatmapOptions } from './types';
@@ -20,16 +21,49 @@ interface Props extends PanelProps<HeatmapOptions> {}
  * like query results, panel options, and the current timezone.
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone, timeRange }) => {
+  const { valueFieldName, timeFieldName } = options;
+
   // `options` contains the properties defined in the `HeatmapOptions` object.
   const { regions, showLegend, showValueIndicator, from, to } = options;
 
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
+  const theme = useTheme();
+
   return (
     <svg width={width} height={height}>
       {data.series.map((frame, i) => {
         const segmentHeight = height / data.series.length;
+
+        // Use the first temporal field.
+        const timeField = frame.fields.find(f => f.name === timeFieldName) ?? frame.fields.find(f => f.type === 'time');
+        if (!timeField) {
+          return (
+            <text
+              style={{ fill: theme.colors.text }}
+              x={width / 2 - measureText('Select a time dimension') / 2}
+              y={i * segmentHeight + segmentHeight / 2}
+            >
+              Select a time dimension
+            </text>
+          );
+        }
+
+        // Use the first numeric field.
+        const valueField =
+          frame.fields.find(f => f.name === valueFieldName) ?? frame.fields.find(f => f.type === 'number');
+        if (!valueField) {
+          return (
+            <text
+              style={{ fill: theme.colors.text }}
+              x={width / 2 - measureText('Select a value dimension') / 2}
+              y={i * segmentHeight + segmentHeight / 2}
+            >
+              Select a value dimension
+            </text>
+          );
+        }
 
         return (
           <g key={i} transform={`translate(0, ${i * segmentHeight})`}>
@@ -37,7 +71,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               width={width}
               height={segmentHeight}
               showLegend={showLegend}
-              frame={frame}
+              timeField={timeField}
+              valueField={valueField}
               timeZone={timeZone}
               timeRange={timeRange}
               dailyIntervalHours={dailyIntervalHours}
@@ -57,7 +92,8 @@ interface HeatmapContainerProps {
 
   showLegend: boolean;
   showValueIndicator: boolean;
-  frame: DataFrame;
+  timeField: Field<number>;
+  valueField: Field<number>;
   timeZone: string;
   timeRange: TimeRange;
   dailyIntervalHours: [number, number];
@@ -72,7 +108,8 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   width,
   height,
   showLegend,
-  frame,
+  timeField,
+  valueField,
   timeZone,
   timeRange,
   dailyIntervalHours,
@@ -81,26 +118,13 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
 }) => {
   const [showTriangle, setShowTriangle] = useState<number | undefined>();
 
-  // Use the first temporal field.
-  const timeField = frame.fields.find(f => f.type === 'time');
-  if (!timeField) {
-    return <p>Missing time field</p>;
-  }
-
-  // Use the first numeric field.
-  const valueField = frame.fields.find(f => f.type === 'number');
-  if (!valueField) {
-    return <p>Missing value field</p>;
-  }
-
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
   const bucketData = bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours);
-  const numericField = frame.fields.find(field => field.type === 'number');
 
   // Get custom fields options. For now, we use the configuration in the first
   // numeric field in the data frame.
-  const fieldConfig = numericField?.config.custom;
+  const fieldConfig = valueField.config.custom;
   const colorPalette = fieldConfig.colorPalette;
   const invertPalette = fieldConfig.invertPalette;
   const colorSpace = fieldConfig.colorSpace;
@@ -178,4 +202,14 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
       ) : null}
     </>
   );
+};
+
+const measureText = (text: string): number => {
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.font = '14px Arial';
+    return ctx.measureText(text).width;
+  }
+  return 0;
 };

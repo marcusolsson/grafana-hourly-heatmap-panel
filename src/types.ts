@@ -4,6 +4,11 @@ import { TimeRegion } from './TimeRegionEditor';
 type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
 
 export interface HeatmapOptions {
+  // Dimensions
+  timeFieldName: string;
+  valueFieldName: string;
+
+  // Time regions and filters
   from: string;
   to: string;
   regions: TimeRegion[];

@@ -10,6 +10,7 @@ import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
 import { TimeRegionEditor } from './TimeRegionEditor';
 
+import { FieldSelectEditor } from './FieldSelectEditor';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
@@ -106,6 +107,28 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
   })
   .setPanelOptions(builder => {
     return builder
+      .addCustomEditor({
+        id: 'timeFieldName',
+        path: 'timeFieldName',
+        name: 'Time',
+        description: 'Defaults to the first time field.',
+        category: ['Dimensions'],
+        editor: FieldSelectEditor,
+        settings: {
+          filterByType: FieldType.time,
+        },
+      })
+      .addCustomEditor({
+        id: 'valueFieldName',
+        path: 'valueFieldName',
+        name: 'Value',
+        description: 'Defaults to the first number field.',
+        category: ['Dimensions'],
+        editor: FieldSelectEditor,
+        settings: {
+          filterByType: FieldType.number,
+        },
+      })
       .addSelect({
         path: 'from',
         name: 'From',
