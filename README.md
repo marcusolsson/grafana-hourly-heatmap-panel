@@ -20,11 +20,7 @@ Grafana 7.0 introduced a new plugin architecture based on React. Instead of migr
 
 ## Configuration
 
-### Query
-
-The Hourly Heatmap panel expects a query that returns a **time** field, and a **number** field.
-
-The name of each field doesn't matter—the panel selects the first field of each required type.
+This section lists the available configuration options for the JSON API data source.
 
 ### Panel options
 
