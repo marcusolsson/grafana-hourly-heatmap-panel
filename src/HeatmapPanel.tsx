@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import { TimeRange, DataFrame, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
 import { bucketize } from './bucket';
@@ -21,7 +21,7 @@ interface Props extends PanelProps<HeatmapOptions> {}
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone, timeRange }) => {
   // `options` contains the properties defined in the `HeatmapOptions` object.
-  const { regions, showLegend, from, to } = options;
+  const { regions, showLegend, showValueIndicator, from, to } = options;
 
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
@@ -42,6 +42,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               timeRange={timeRange}
               dailyIntervalHours={dailyIntervalHours}
               regions={regions ?? []}
+              showValueIndicator={showValueIndicator}
             />
           </g>
         );
@@ -55,6 +56,7 @@ interface HeatmapContainerProps {
   height: number;
 
   showLegend: boolean;
+  showValueIndicator: boolean;
   frame: DataFrame;
   timeZone: string;
   timeRange: TimeRange;
@@ -75,7 +77,10 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   timeRange,
   dailyIntervalHours,
   regions,
+  showValueIndicator,
 }) => {
+  const [showTriangle, setShowTriangle] = useState<number | undefined>();
+
   // Use the first temporal field.
   const timeField = frame.fields.find(f => f.type === 'time');
   if (!timeField) {
@@ -90,12 +95,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
 
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = useMemo(() => bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours), [
-    frame,
-    timeZone,
-    timeRange,
-    dailyIntervalHours,
-  ]);
+  const bucketData = bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours);
   const numericField = frame.fields.find(field => field.type === 'number');
 
   // Get custom fields options. For now, we use the configuration in the first
@@ -137,6 +137,10 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
     (heatmapPadding.top + heatmapPadding.bottom) -
     (showLegend ? legendHeight + legendPadding.top + legendPadding.bottom : 0.0);
 
+  const onBucketHover = (value?: number) => {
+    setShowTriangle(value);
+  };
+
   return (
     <>
       <g transform={`translate(${heatmapPadding.left}, ${heatmapPadding.top})`}>
@@ -149,6 +153,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
           timeRange={timeRange}
           dailyInterval={dailyIntervalHours}
           regions={regions}
+          onHover={onBucketHover}
         />
       </g>
 
@@ -166,6 +171,8 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
             max={bucketData.max}
             valueDisplay={bucketData.valueDisplay}
             colorDisplay={colorDisplay}
+            currentValue={showTriangle}
+            indicator={showValueIndicator}
           />
         </g>
       ) : null}

@@ -17,6 +17,7 @@ interface HeatmapChartProps {
   timeRange: TimeRange;
   dailyInterval: [number, number];
   regions: TimeRegion[];
+  onHover: (value?: number) => void;
 }
 
 /**
@@ -32,6 +33,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   timeRange,
   dailyInterval,
   regions,
+  onHover,
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
@@ -76,6 +78,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
         timeZone={timeZone}
         dailyIntervalMinutes={dailyIntervalMinutes}
         regions={regions}
+        onHover={onHover}
       />
     </g>
   );

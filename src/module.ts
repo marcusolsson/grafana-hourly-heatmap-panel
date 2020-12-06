@@ -13,8 +13,6 @@ import { TimeRegionEditor } from './TimeRegionEditor';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
-const paletteNotSelected = (colorPalette: string) => (config: HeatmapFieldConfig) =>
-  config.colorPalette !== colorPalette;
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
@@ -68,7 +66,8 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           path: 'invertPalette',
           name: 'Invert color palette',
           defaultValue: false,
-          showIf: paletteNotSelected('custom'),
+          showIf: (config: HeatmapFieldConfig) =>
+            config.colorPalette !== 'custom' && config.colorPalette !== 'fieldOptions',
         })
         .addSelect({
           path: 'colorSpace',
@@ -110,7 +109,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addSelect({
         path: 'from',
         name: 'From',
-        description: '',
+        description: 'Hide values before this time',
         settings: {
           options: d3.range(0, 24, 1).map(h => ({
             label: dateTime()
@@ -125,6 +124,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addSelect({
         path: 'to',
         name: 'To',
+        description: 'Hide values after this time',
         settings: {
           options: d3.range(0, 24, 1).map(h => ({
             label: dateTime()
@@ -140,11 +140,19 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         path: 'showLegend',
         name: 'Show legend',
         defaultValue: true,
+        category: ['Legend'],
+      })
+      .addBooleanSwitch({
+        path: 'showValueIndicator',
+        name: 'Show value indicator',
+        defaultValue: false,
+        category: ['Legend'],
       })
       .addCustomEditor({
         id: 'regions',
         path: 'regions',
         name: 'Time regions',
+        description: 'Highlight time regions during the day',
         editor: TimeRegionEditor,
       });
   });

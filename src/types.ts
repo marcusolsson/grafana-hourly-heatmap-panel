@@ -4,10 +4,13 @@ import { TimeRegion } from './TimeRegionEditor';
 type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
 
 export interface HeatmapOptions {
-  regions: TimeRegion[];
-  showLegend: boolean;
   from: string;
   to: string;
+  regions: TimeRegion[];
+
+  // Legend
+  showLegend: boolean;
+  showValueIndicator: boolean;
 }
 
 export interface HeatmapFieldConfig {

@@ -20,6 +20,7 @@ interface HeatmapProps {
   timeZone: string;
   dailyIntervalMinutes: [number, number];
   regions: TimeRegion[];
+  onHover: (value?: number) => void;
 }
 
 /**
@@ -35,6 +36,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   timeZone,
   dailyIntervalMinutes,
   regions,
+  onHover,
 }) => {
   const x = d3
     .scaleBand()
@@ -83,6 +85,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({
                 fill={colorDisplay(d.value)}
                 width={cellWidth}
                 height={cellHeight}
+                onMouseLeave={() => onHover(undefined)}
+                onMouseEnter={() => onHover(d.value)}
               />
             </Tippy>
           );
