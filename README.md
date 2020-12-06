@@ -28,8 +28,8 @@ This section lists the available configuration options for the JSON API data sou
 
 | Option | Description |
 |--------|-------------|
-| Time | Name of the field to use for time. Defaults to the first time field. |
-| Value | Name of the field to use for value. Defaults to the first number field. |
+| _Time_ | Name of the field to use for time. Defaults to the first time field. |
+| _Value_ | Name of the field to use for value. Defaults to the first number field. |
 
 #### Display
 
