@@ -26,19 +26,20 @@ The Hourly Heatmap panel expects a query that returns a **time** field, and a **
 
 The name of each field doesn't matter—the panel selects the first field of each required type.
 
-### Display options
+### Panel options
 
-- **From** and **To** lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic.
-- **Show legend** toggles the color spectrum.
+- **From** and **To** lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic
+- **Show legend** toggles the color spectrum
+- **Show value indicator** toggles an indicator that shows the current value in the legend
 
 ### Field options
 
 #### Custom options
 
-- **Group by** sets the size of each bucket.
-- **Calculation** sets calculation to use for reducing data within a bucket.
-- **Color palette** sets the colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own.
-- **Invert color palette** inverts the currently selected color palette.
+- **Group by** sets the size of each bucket
+- **Calculation** sets calculation to use for reducing data within a bucket
+- **Color palette** sets the colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own
+- **Invert color palette** inverts the currently selected color palette
 
 #### Standard options
 
