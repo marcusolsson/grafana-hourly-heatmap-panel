@@ -46,8 +46,6 @@ This section lists the available configuration options for the JSON API data sou
 
 ### Field options
 
-#### Custom options
-
 | Option | Description |
 |--------|-------------|
 | _Group by_ | Size of each bucket |
