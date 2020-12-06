@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { TimeRange, dateTime, dateTimeParse, DataFrame, DisplayProcessor } from '@grafana/data';
+import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field } from '@grafana/data';
 
 export interface Point {
   time: number;
@@ -83,53 +83,47 @@ export const groupByDay = (points: Point[]): PointSet[] => {
   }));
 };
 
-const defaultDisplay: DisplayProcessor = (value: any) => ({ numeric: value, text: value.toString() });
+export const defaultDisplay: DisplayProcessor = (value: any) => ({ numeric: value, text: value.toString() });
 const minutesPerDay = 24 * 60;
 
 // bucketize returns the main data structure used by the visualizations.
 export const bucketize = (
-  frame: DataFrame,
+  timeField: Field<number>,
+  valueField: Field<number>,
   timeZone: string,
   timeRange: TimeRange,
   dailyInterval: [number, number]
 ): BucketData => {
-  console.log('render');
-  // Use the first temporal field.
-  const timeField = frame.fields.find(f => f.type === 'time');
-
-  // Use the first numeric field.
-  const valueField = frame.fields.find(f => f.type === 'number');
-
   // Convert data frame fields to rows.
-  const rows = Array.from({ length: frame.length }, (v: any, i: number) => ({
-    time: timeField?.values.get(i),
-    value: valueField?.values.get(i),
+  const rows = Array.from({ length: timeField.values.length }, (_, i) => ({
+    time: timeField.values.get(i),
+    value: valueField.values.get(i),
   }));
 
-  // Convert time range to dashboard time zone.
-  const tzFrom = dateTimeParse(timeRange.from.valueOf(), { timeZone }).startOf('day');
-  const tzTo = dateTimeParse(timeRange.to.valueOf(), { timeZone }).endOf('day');
+  // Get the time range extents in the dashboard time zone.
+  const extents = [
+    dateTimeParse(timeRange.from.valueOf(), { timeZone }).startOf('day'),
+    dateTimeParse(timeRange.to.valueOf(), { timeZone }).endOf('day'),
+  ];
 
-  const extents = [tzFrom.startOf('day'), tzTo.endOf('day')];
+  const rowsWithinTimeRange = rows.filter(row => {
+    // Filter points within time range.
+    const curr = dateTimeParse(row.time, { timeZone });
+    return extents[0].valueOf() <= curr.valueOf() && curr.valueOf() < extents[1].valueOf();
+  });
 
-  const filteredRows = rows
-    .filter(row => {
-      // Filter points within time range.
-      const curr = dateTimeParse(row.time, { timeZone });
-      return extents[0].valueOf() <= curr.valueOf() && curr.valueOf() < extents[1].valueOf();
-    })
-    .filter(row => {
-      // Filter rows within interval.
-      const dt = dateTimeParse(row.time, { timeZone });
-      const hour = dt.hour ? dt.hour() : 0.0;
-      return dailyInterval[0] <= hour && hour < dailyInterval[1];
-    });
+  const rowsWithinDailyInterval = rowsWithinTimeRange.filter(row => {
+    // Filter rows within interval.
+    const dt = dateTimeParse(row.time, { timeZone });
+    const hour = dt.hour ? dt.hour() : 0.0;
+    return dailyInterval[0] <= hour && hour < dailyInterval[1];
+  });
 
   // Extract the field configuration..
-  const customData = valueField?.config.custom;
+  const customData = valueField.config.custom;
 
   // Group and reduce values.
-  const groupedByMinutes = groupByMinutes(filteredRows, customData.groupBy, timeZone);
+  const groupedByMinutes = groupByMinutes(rowsWithinDailyInterval, customData.groupBy, timeZone);
   const reducedMinutes = reduce(groupedByMinutes, calculations[customData.calculation]);
   const points = groupByDay(reducedMinutes).flatMap(({ time, values }) =>
     values.map(({ time, value }) => ({
@@ -142,10 +136,10 @@ export const bucketize = (
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
     points: points,
-    min: valueField?.config.min ?? Number.NEGATIVE_INFINITY,
-    max: valueField?.config.max ?? Number.POSITIVE_INFINITY,
-    valueDisplay: valueField?.display ? valueField?.display : defaultDisplay,
-    timeDisplay: timeField?.display ? timeField?.display : defaultDisplay,
+    min: valueField.config.min ?? Number.NEGATIVE_INFINITY,
+    max: valueField.config.max ?? Number.POSITIVE_INFINITY,
+    valueDisplay: valueField.display ? valueField.display : defaultDisplay,
+    timeDisplay: timeField.display ? timeField.display : defaultDisplay,
   };
 };
 

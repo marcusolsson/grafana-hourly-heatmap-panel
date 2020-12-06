@@ -76,9 +76,21 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   dailyIntervalHours,
   regions,
 }) => {
+  // Use the first temporal field.
+  const timeField = frame.fields.find(f => f.type === 'time');
+  if (!timeField) {
+    return <p>Missing time field</p>;
+  }
+
+  // Use the first numeric field.
+  const valueField = frame.fields.find(f => f.type === 'number');
+  if (!valueField) {
+    return <p>Missing value field</p>;
+  }
+
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = useMemo(() => bucketize(frame, timeZone, timeRange, dailyIntervalHours), [
+  const bucketData = useMemo(() => bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours), [
     frame,
     timeZone,
     timeRange,
