@@ -99,12 +99,7 @@ describe('bucketize', () => {
           dateTime(startTime)
             .add(15, 'hours')
             .add(40, 'minutes'),
-        ]
-          .map(_ => _.valueOf())
-          .map(_ => {
-            console.log(_);
-            return _;
-          })
+        ].map(_ => _.valueOf())
       ),
     };
 
