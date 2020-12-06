@@ -28,23 +28,36 @@ The name of each field doesn't matter—the panel selects the first field of eac
 
 ### Panel options
 
-- **From** and **To** lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic
-- **Show legend** toggles the color spectrum
-- **Show value indicator** toggles an indicator that shows the current value in the legend
+#### Dimensions
+
+| Option | Description |
+|--------|-------------|
+| Time | Name of the field to use for time. Defaults to the first time field. |
+| Value | Name of the field to use for value. Defaults to the first number field. |
+
+#### Display
+
+| Option | Description |
+|--------|-------------|
+| _From_ and _To_ | Lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic |
+
+#### Legend
+
+| Option | Description |
+|--------|-------------|
+| _Show legend_ | Toggles the color spectrum |
+| _Show value indicator_ | Toggles an indicator that shows the current value in the legend |
 
 ### Field options
 
 #### Custom options
 
-- **Group by** sets the size of each bucket
-- **Calculation** sets calculation to use for reducing data within a bucket
-- **Color palette** sets the colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own
-- **Invert color palette** inverts the currently selected color palette
-
-#### Standard options
-
-- **Min** and **Max** sets the interval used for color mapping. Any data outside this interval will be clamped.
-- **Decimals** and **Unit** sets the textual format of each value.
+| Option | Description |
+|--------|-------------|
+| _Group by_ | Size of each bucket |
+| _Calculation_ | Calculation to use for reducing data within a bucket |
+| _Color palette_ | Colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own. Select **Field options** to use the colors from the built-in **Color scheme** field option |
+| _Invert color palette_ | Inverts the currently selected color palette |
 
 ## Troubleshooting
 
