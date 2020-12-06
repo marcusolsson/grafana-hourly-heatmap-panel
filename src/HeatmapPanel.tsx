@@ -110,10 +110,19 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
   };
 
   // Create the scale we'll be using to map values to colors.
-  let scale =
-    colorPalette === 'custom'
-      ? makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds)
-      : makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max, invertPalette);
+  const customColorScale = makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds);
+  const spectrumColorScale = makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max, invertPalette);
+
+  const colorDisplay = (value: number): string => {
+    switch (colorPalette) {
+      case 'custom':
+        return customColorScale(value);
+      case 'fieldOptions':
+        return valueField.display!(value).color!;
+      default:
+        return spectrumColorScale(value);
+    }
+  };
 
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
@@ -135,7 +144,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
           data={bucketData}
           width={heatmapWidth}
           height={heatmapHeight}
-          colorScale={scale}
+          colorDisplay={colorDisplay}
           timeZone={timeZone}
           timeRange={timeRange}
           dailyInterval={dailyIntervalHours}
@@ -156,7 +165,7 @@ export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
             min={bucketData.min}
             max={bucketData.max}
             valueDisplay={bucketData.valueDisplay}
-            colorScale={scale}
+            colorDisplay={colorDisplay}
           />
         </g>
       ) : null}

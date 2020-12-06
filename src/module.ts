@@ -52,13 +52,21 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           path: 'colorPalette',
           name: 'Color palette',
           settings: {
-            options: [{ value: 'custom', label: 'Custom' }, ...predefinedColorPalettes],
+            options: [
+              { value: 'custom', label: 'Custom', description: 'Define a custom color palette' },
+              {
+                value: 'fieldOptions',
+                label: 'Field options',
+                description: 'Use color from field options (available from Grafana 7.3)',
+              },
+              ...predefinedColorPalettes,
+            ],
           },
           defaultValue: 'interpolateSpectral',
         })
         .addBooleanSwitch({
           path: 'invertPalette',
-          name: 'Invert Color Palette',
+          name: 'Invert color palette',
           defaultValue: false,
           showIf: paletteNotSelected('custom'),
         })
@@ -93,6 +101,8 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       FieldConfigProperty.Max,
       FieldConfigProperty.Decimals,
       FieldConfigProperty.Unit,
+      FieldConfigProperty.Color,
+      FieldConfigProperty.Thresholds,
     ],
   })
   .setPanelOptions(builder => {

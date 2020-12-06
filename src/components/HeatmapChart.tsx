@@ -12,7 +12,7 @@ interface HeatmapChartProps {
   data: BucketData;
   width: number;
   height: number;
-  colorScale: any;
+  colorDisplay: (value: number) => string;
   timeZone: string;
   timeRange: TimeRange;
   dailyInterval: [number, number];
@@ -27,7 +27,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
   data,
   width,
   height,
-  colorScale,
+  colorDisplay,
   timeZone,
   timeRange,
   dailyInterval,
@@ -72,7 +72,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
         values={values}
         width={chartWidth}
         height={chartHeight}
-        colorScale={colorScale}
+        colorDisplay={colorDisplay}
         timeZone={timeZone}
         dailyIntervalMinutes={dailyIntervalMinutes}
         regions={regions}

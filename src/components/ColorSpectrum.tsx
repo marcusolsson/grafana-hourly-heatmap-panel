@@ -8,13 +8,13 @@ export interface Props {
   min: number;
   max: number;
 
-  colorScale: any;
+  colorDisplay: (value: number) => string;
 }
 
 /**
  * ColorSpectrum draws a SVG color spectrum using a given color scale.
  */
-export const ColorSpectrum: React.FC<Props> = ({ width, height, colorScale, min, max }) => {
+export const ColorSpectrum: React.FC<Props> = ({ width, height, colorDisplay, min, max }) => {
   const stepSize = Math.ceil(width / 20);
 
   // Divide the spectrum into segments of equal size.
@@ -30,7 +30,7 @@ export const ColorSpectrum: React.FC<Props> = ({ width, height, colorScale, min,
     <g>
       {positionRange.map((pos, i) => {
         const cellSize = pos + stepSize > width ? width - pos : stepSize;
-        return <rect key={i} x={pos} width={cellSize} height={height} fill={colorScale(valueScale(pos))} />;
+        return <rect key={i} x={pos} width={cellSize} height={height} fill={colorDisplay(valueScale(pos))} />;
       })}
     </g>
   );

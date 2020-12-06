@@ -13,7 +13,7 @@ const minutesPerDay = 24 * 60;
 interface HeatmapProps {
   values: string[];
   data: BucketData;
-  colorScale: any;
+  colorDisplay: (value: number) => string;
   width: number;
   height: number;
   numBuckets: number;
@@ -28,7 +28,7 @@ interface HeatmapProps {
 export const Heatmap: React.FC<HeatmapProps> = ({
   values,
   data,
-  colorScale,
+  colorDisplay,
   width,
   height,
   numBuckets,
@@ -80,7 +80,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
               <rect
                 x={x(startOfDay.valueOf().toString())}
                 y={Math.ceil(y(minutesSinceStartOfDay))}
-                fill={colorScale(d.value)}
+                fill={colorDisplay(d.value)}
                 width={cellWidth}
                 height={cellHeight}
               />
