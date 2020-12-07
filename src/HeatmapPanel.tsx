@@ -1,7 +1,6 @@
 import React from 'react';
 import { PanelProps } from '@grafana/data';
 import { useTheme } from '@grafana/ui';
-
 import { Chart } from './components/Chart';
 import { measureText } from './helpers';
 import { HeatmapOptions } from './types';

@@ -6,6 +6,7 @@ import {
   standardEditorsRegistry,
   thresholdsOverrideProcessor,
 } from '@grafana/data';
+import { hasCapability } from './helpers';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
 import { TimeRegionEditor } from './components/TimeRegionEditor';
@@ -14,6 +15,38 @@ import { FieldSelectEditor } from './components/FieldSelectEditor';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
+
+const standardOptions = () => {
+  const options = [
+    FieldConfigProperty.Min,
+    FieldConfigProperty.Max,
+    FieldConfigProperty.Decimals,
+    FieldConfigProperty.Unit,
+  ];
+
+  if (hasCapability('color-scheme')) {
+    options.push(FieldConfigProperty.Color);
+    options.push(FieldConfigProperty.Thresholds);
+  }
+
+  return options;
+};
+
+const buildColorPaletteOptions = () => {
+  const options: { label: string; value: string; description?: string }[] = [
+    { value: 'custom', label: 'Custom', description: 'Define a custom color palette' },
+  ];
+
+  if (hasCapability('color-scheme')) {
+    options.push({
+      value: 'fieldOptions',
+      label: 'Field options',
+      description: 'Use color from field options (available from Grafana 7.3)',
+    });
+  }
+
+  return options.concat([...predefinedColorPalettes]);
+};
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
@@ -51,15 +84,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           path: 'colorPalette',
           name: 'Color palette',
           settings: {
-            options: [
-              { value: 'custom', label: 'Custom', description: 'Define a custom color palette' },
-              {
-                value: 'fieldOptions',
-                label: 'Field options',
-                description: 'Use color from field options (available from Grafana 7.3)',
-              },
-              ...predefinedColorPalettes,
-            ],
+            options: buildColorPaletteOptions(),
           },
           defaultValue: 'interpolateSpectral',
         })
@@ -96,14 +121,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           showIf: paletteSelected('custom'),
         });
     },
-    standardOptions: [
-      FieldConfigProperty.Min,
-      FieldConfigProperty.Max,
-      FieldConfigProperty.Decimals,
-      FieldConfigProperty.Unit,
-      FieldConfigProperty.Color,
-      FieldConfigProperty.Thresholds,
-    ],
+    standardOptions: standardOptions(),
   })
   .setPanelOptions(builder => {
     return builder
