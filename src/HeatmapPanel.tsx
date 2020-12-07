@@ -25,6 +25,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
     showLegend,
     showValueIndicator,
     showCellBorder,
+    showTooltip,
     legendGradientQuality,
     from,
     to,
@@ -87,6 +88,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               showValueIndicator={showValueIndicator}
               cellBorder={showCellBorder}
               legendGradientQuality={legendGradientQuality}
+              tooltip={showTooltip}
             />
           </g>
         );

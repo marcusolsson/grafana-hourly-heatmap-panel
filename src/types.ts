@@ -14,6 +14,7 @@ export interface HeatmapOptions {
   to: string;
   regions: TimeRegion[];
   showCellBorder: boolean;
+  showTooltip: boolean;
 
   // Legend
   showLegend: boolean;

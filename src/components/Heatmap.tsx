@@ -23,6 +23,7 @@ interface HeatmapProps {
   regions: TimeRegion[];
   onHover: (value?: number) => void;
   cellBorder: boolean;
+  tooltip: boolean;
 }
 
 /**
@@ -40,6 +41,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   regions,
   onHover,
   cellBorder,
+  tooltip,
 }) => {
   const theme = useTheme();
 
@@ -68,34 +70,42 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           const minutesSinceStartOfDay = bucketStart.hour!() * 60 + bucketStart.minute!();
           const displayValue = data.valueField.display!(d.value);
 
-          return (
-            <Tippy
-              key={i}
-              content={
-                <div>
-                  <Tooltip
-                    bucketStartTime={bucketStart}
-                    displayValue={displayValue}
-                    numBuckets={numBuckets}
-                    tz={timeZone}
-                  />
-                </div>
-              }
-              placement="bottom"
-              animation={false}
-            >
-              <rect
-                x={x(startOfDay.valueOf().toString())}
-                y={Math.ceil(y(minutesSinceStartOfDay))}
-                fill={colorDisplay(d.value)}
-                width={cellWidth}
-                height={cellHeight}
-                onMouseLeave={() => onHover(undefined)}
-                onMouseEnter={() => onHover(d.value)}
-                stroke={cellBorder ? theme.colors.panelBg : undefined}
-              />
-            </Tippy>
+          const content = (
+            <rect
+              x={x(startOfDay.valueOf().toString())}
+              y={Math.ceil(y(minutesSinceStartOfDay))}
+              fill={colorDisplay(d.value)}
+              width={cellWidth}
+              height={cellHeight}
+              onMouseLeave={() => onHover(undefined)}
+              onMouseEnter={() => onHover(d.value)}
+              stroke={cellBorder ? theme.colors.panelBg : undefined}
+            />
           );
+
+          if (tooltip) {
+            return (
+              <Tippy
+                key={i}
+                content={
+                  <div>
+                    <Tooltip
+                      bucketStartTime={bucketStart}
+                      displayValue={displayValue}
+                      numBuckets={numBuckets}
+                      tz={timeZone}
+                    />
+                  </div>
+                }
+                placement="bottom"
+                animation={false}
+              >
+                {content}
+              </Tippy>
+            );
+          } else {
+            return content;
+          }
         })}
       </g>
       <g>

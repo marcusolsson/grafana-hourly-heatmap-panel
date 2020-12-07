@@ -19,6 +19,7 @@ interface HeatmapWithAxesProps {
   regions: TimeRegion[];
   onHover: (value?: number) => void;
   cellBorder: boolean;
+  tooltip: boolean;
 }
 
 /**
@@ -35,6 +36,7 @@ export const HeatmapWithAxes: React.FC<HeatmapWithAxesProps> = ({
   regions,
   onHover,
   cellBorder,
+  tooltip,
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
@@ -81,6 +83,7 @@ export const HeatmapWithAxes: React.FC<HeatmapWithAxesProps> = ({
         regions={regions}
         onHover={onHover}
         cellBorder={cellBorder}
+        tooltip={tooltip}
       />
     </g>
   );

@@ -23,6 +23,7 @@ interface ChartProps {
   timeRange: TimeRange;
   dailyIntervalHours: [number, number];
   regions: TimeRegion[];
+  tooltip: boolean;
 }
 
 /**
@@ -43,6 +44,7 @@ export const Chart: React.FC<ChartProps> = ({
   showValueIndicator,
   cellBorder,
   legendGradientQuality,
+  tooltip,
 }) => {
   const [hoverValue, setHoverValue] = useState<number | undefined>();
 
@@ -95,6 +97,7 @@ export const Chart: React.FC<ChartProps> = ({
           regions={regions}
           onHover={onHeatmapHover}
           cellBorder={cellBorder}
+          tooltip={tooltip}
         />
       </g>
 

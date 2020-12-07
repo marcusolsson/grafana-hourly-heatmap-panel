@@ -132,7 +132,15 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addBooleanSwitch({
         path: 'showCellBorder',
         name: 'Show cell border',
+        description: 'Display a border around each cell',
         defaultValue: false,
+      })
+      .addBooleanSwitch({
+        path: 'showTooltip',
+        name: 'Show tooltip',
+        description:
+          "Display a tooltip for the value under the cursor. Currently, this severely impacts performance. It's recommended to disable this for large time intervals.",
+        defaultValue: true,
       })
       .addSelect({
         path: 'from',
