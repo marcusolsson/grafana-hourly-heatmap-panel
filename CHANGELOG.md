@@ -10,6 +10,7 @@
 - Select the fields to use for time and value
 - Add option to configure legend quality
 - Add option to use the new color scheme field option in Grafana 7.3+
+- Add option to show a cell border ([#17](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/issues/17))
 
 ## 0.8.1 (2020-11-27)
 
