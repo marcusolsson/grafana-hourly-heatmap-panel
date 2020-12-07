@@ -43,6 +43,7 @@ This section lists the available configuration options for the JSON API data sou
 |--------|-------------|
 | _Show legend_ | Toggles the color spectrum |
 | _Show value indicator_ | Toggles an indicator that shows the current value in the legend |
+| _Gradient quality_ | Determines the quality of the color spectrum. Higher quality means more SVG elements being drawn. Reduce the quality if you experience degraded performance. |
 
 ### Field options
 
