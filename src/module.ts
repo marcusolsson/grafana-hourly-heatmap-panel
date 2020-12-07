@@ -16,7 +16,7 @@ import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 
-const standardOptions = () => {
+const buildStandardOptions = () => {
   const options = [
     FieldConfigProperty.Min,
     FieldConfigProperty.Max,
@@ -121,7 +121,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           showIf: paletteSelected('custom'),
         });
     },
-    standardOptions: standardOptions(),
+    standardOptions: buildStandardOptions(),
   })
   .setPanelOptions(builder => {
     return builder
