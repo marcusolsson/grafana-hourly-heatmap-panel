@@ -7,7 +7,7 @@ interface YAxisProps {
   dailyInterval: [number, number];
 }
 
-export const YAxis: React.FC<YAxisProps> = ({ height, dailyInterval }) => {
+export const YAxis: React.FC<YAxisProps> = React.memo(({ height, dailyInterval }) => {
   const y = d3
     .scaleLinear()
     .domain(dailyInterval)
@@ -31,7 +31,7 @@ export const YAxis: React.FC<YAxisProps> = ({ height, dailyInterval }) => {
       }}
     />
   );
-};
+});
 
 const calculateTickHeight = (height: number) => {
   const preferredTickHeight = 20;

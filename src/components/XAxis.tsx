@@ -20,7 +20,7 @@ const referenceText = dateTimeParse(0)
   .toDate()
   .toLocaleDateString(undefined, localeOptions);
 
-export const XAxis: React.FC<XAxisProps> = ({ width, values, from, to, numDays, timeZone }) => {
+export const XAxis: React.FC<XAxisProps> = React.memo(({ width, values, from, to, numDays, timeZone }) => {
   const x = d3
     .scaleBand()
     .domain(values)
@@ -61,7 +61,7 @@ export const XAxis: React.FC<XAxisProps> = ({ width, values, from, to, numDays, 
       }}
     />
   );
-};
+});
 
 const calculateTickInterval = (width: number, numDays: number, referenceText: string) => {
   const preferredTickWidth = measureText(referenceText);

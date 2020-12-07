@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TimeRange, Field, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
 
 import { bucketize } from '../bucket';
@@ -48,7 +48,13 @@ export const Chart: React.FC<ChartProps> = ({
 
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours);
+  const bucketData = useMemo(() => bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours), [
+    timeField,
+    valueField,
+    timeZone,
+    timeRange,
+    dailyIntervalHours,
+  ]);
 
   const colorMapper = buildColorMapper(valueField);
 

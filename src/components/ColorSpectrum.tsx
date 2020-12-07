@@ -23,57 +23,50 @@ export interface Props {
  * the performance of the panel. Is there a way to get a smooth gradient using
  * CSS, using only a single rectangle?
  */
-export const ColorSpectrum: React.FC<Props> = ({
-  width,
-  height,
-  colorDisplay,
-  min,
-  max,
-  currentValue,
-  indicator,
-  quality,
-}) => {
-  const calculateStepSize = (quality: Quality): number => {
-    switch (quality) {
-      case 'high':
-        return Math.ceil(1);
-      case 'medium':
-        return Math.ceil(width / 40);
-      case 'low':
-        return Math.ceil(width / 20);
-    }
-  };
+export const ColorSpectrum: React.FC<Props> = React.memo(
+  ({ width, height, colorDisplay, min, max, currentValue, indicator, quality }) => {
+    const calculateStepSize = (quality: Quality): number => {
+      switch (quality) {
+        case 'high':
+          return Math.ceil(1);
+        case 'medium':
+          return Math.ceil(width / 40);
+        case 'low':
+          return Math.ceil(width / 20);
+      }
+    };
 
-  const stepSize = calculateStepSize(quality);
+    const stepSize = calculateStepSize(quality);
 
-  // Divide the spectrum into segments of equal size.
-  const positionRange = d3.range(0, width, stepSize);
+    // Divide the spectrum into segments of equal size.
+    const positionRange = d3.range(0, width, stepSize);
 
-  // Map a X coordinate to a value between min and max.
-  const toValueScale = d3
-    .scaleLinear()
-    .domain([0, width])
-    .range([min, max]);
+    // Map a X coordinate to a value between min and max.
+    const toValueScale = d3
+      .scaleLinear()
+      .domain([0, width])
+      .range([min, max]);
 
-  const fromValueScale = d3
-    .scaleLinear()
-    .domain([min, max])
-    .range([0, width]);
+    const fromValueScale = d3
+      .scaleLinear()
+      .domain([min, max])
+      .range([0, width]);
 
-  return (
-    <>
-      {indicator && currentValue ? (
-        <g transform={`translate(${fromValueScale(currentValue)}, -7)`}>
-          <polygon points="-5,0 5,0 0,7" style={{ fill: 'white' }} />
+    return (
+      <>
+        {indicator && currentValue ? (
+          <g transform={`translate(${fromValueScale(currentValue)}, -7)`}>
+            <polygon points="-5,0 5,0 0,7" style={{ fill: 'white' }} />
+          </g>
+        ) : null}
+
+        <g>
+          {positionRange.map((pos, i) => {
+            const cellSize = pos + stepSize > width ? width - pos : stepSize;
+            return <rect key={i} x={pos} width={cellSize} height={height} fill={colorDisplay(toValueScale(pos))} />;
+          })}
         </g>
-      ) : null}
-
-      <g>
-        {positionRange.map((pos, i) => {
-          const cellSize = pos + stepSize > width ? width - pos : stepSize;
-          return <rect key={i} x={pos} width={cellSize} height={height} fill={colorDisplay(toValueScale(pos))} />;
-        })}
-      </g>
-    </>
-  );
-};
+      </>
+    );
+  }
+);

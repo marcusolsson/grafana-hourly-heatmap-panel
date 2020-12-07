@@ -20,35 +20,27 @@ interface LegendProps {
 /**
  * Legend with a color spectrum mapped between a minimum and a maximum value.
  */
-export const Legend: React.FC<LegendProps> = ({
-  width,
-  height,
-  min,
-  max,
-  valueDisplay: display,
-  colorDisplay,
-  currentValue,
-  indicator,
-  quality,
-}) => {
-  const legendHeight = 20;
-  const spectrumHeight = height - legendHeight;
+export const Legend: React.FC<LegendProps> = React.memo(
+  ({ width, height, min, max, valueDisplay: display, colorDisplay, currentValue, indicator, quality }) => {
+    const legendHeight = 20;
+    const spectrumHeight = height - legendHeight;
 
-  return (
-    <g>
-      <g transform={`translate(0, ${spectrumHeight})`}>
-        <LegendAxis width={width} min={min} max={max} display={display} />
+    return (
+      <g>
+        <g transform={`translate(0, ${spectrumHeight})`}>
+          <LegendAxis width={width} min={min} max={max} display={display} />
+        </g>
+        <ColorSpectrum
+          currentValue={currentValue}
+          width={width}
+          height={spectrumHeight}
+          colorDisplay={colorDisplay}
+          min={min}
+          max={max}
+          indicator={indicator}
+          quality={quality}
+        />
       </g>
-      <ColorSpectrum
-        currentValue={currentValue}
-        width={width}
-        height={spectrumHeight}
-        colorDisplay={colorDisplay}
-        min={min}
-        max={max}
-        indicator={indicator}
-        quality={quality}
-      />
-    </g>
-  );
-};
+    );
+  }
+);
