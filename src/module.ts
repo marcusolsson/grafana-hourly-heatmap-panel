@@ -33,7 +33,7 @@ const buildStandardOptions = () => {
 };
 
 const buildColorPaletteOptions = () => {
-  const options: { label: string; value: string; description?: string }[] = [
+  const options: Array<{ label: string; value: string; description?: string }> = [
     { value: 'custom', label: 'Custom', description: 'Define a custom color palette' },
   ];
 
