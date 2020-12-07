@@ -14,6 +14,7 @@ interface ChartProps {
   height: number;
 
   legend: boolean;
+  cellBorder: boolean;
   showValueIndicator: boolean;
   legendGradientQuality: Quality;
   timeField: Field<number>;
@@ -40,6 +41,7 @@ export const Chart: React.FC<ChartProps> = ({
   dailyIntervalHours,
   regions,
   showValueIndicator,
+  cellBorder,
   legendGradientQuality,
 }) => {
   const [hoverValue, setHoverValue] = useState<number | undefined>();
@@ -86,6 +88,7 @@ export const Chart: React.FC<ChartProps> = ({
           dailyInterval={dailyIntervalHours}
           regions={regions}
           onHover={onHeatmapHover}
+          cellBorder={cellBorder}
         />
       </g>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 import { dateTimeParse } from '@grafana/data';
 import { TimeRegion } from './TimeRegionEditor';
+import { useTheme } from '@grafana/ui';
 
 import { BucketData } from '../bucket';
 
@@ -21,6 +22,7 @@ interface HeatmapProps {
   dailyIntervalMinutes: [number, number];
   regions: TimeRegion[];
   onHover: (value?: number) => void;
+  cellBorder: boolean;
 }
 
 /**
@@ -37,7 +39,10 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   dailyIntervalMinutes,
   regions,
   onHover,
+  cellBorder,
 }) => {
+  const theme = useTheme();
+
   const x = d3
     .scaleBand()
     .domain(values)
@@ -87,6 +92,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
                 height={cellHeight}
                 onMouseLeave={() => onHover(undefined)}
                 onMouseEnter={() => onHover(d.value)}
+                stroke={cellBorder ? theme.colors.panelBg : undefined}
               />
             </Tippy>
           );

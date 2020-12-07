@@ -18,6 +18,7 @@ interface HeatmapWithAxesProps {
   dailyInterval: [number, number];
   regions: TimeRegion[];
   onHover: (value?: number) => void;
+  cellBorder: boolean;
 }
 
 /**
@@ -33,6 +34,7 @@ export const HeatmapWithAxes: React.FC<HeatmapWithAxesProps> = ({
   dailyInterval,
   regions,
   onHover,
+  cellBorder,
 }) => {
   // Take the axes into account. Ideally we'd use the axis bounding boxes to
   // calculate the offsets dynamically.
@@ -78,6 +80,7 @@ export const HeatmapWithAxes: React.FC<HeatmapWithAxesProps> = ({
         dailyIntervalMinutes={dailyIntervalMinutes}
         regions={regions}
         onHover={onHover}
+        cellBorder={cellBorder}
       />
     </g>
   );

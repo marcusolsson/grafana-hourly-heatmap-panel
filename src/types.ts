@@ -9,10 +9,11 @@ export interface HeatmapOptions {
   timeFieldName: string;
   valueFieldName: string;
 
-  // Time regions and filters
+  // Display
   from: string;
   to: string;
   regions: TimeRegion[];
+  showCellBorder: boolean;
 
   // Legend
   showLegend: boolean;

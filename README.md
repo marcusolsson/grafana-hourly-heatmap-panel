@@ -35,6 +35,7 @@ This section lists the available configuration options for the JSON API data sou
 
 | Option | Description |
 |--------|-------------|
+| _Show cell border_ | Toggles a cell border to make it easier to distinguish cells with similar values
 | _From_ and _To_ | Lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic |
 
 #### Legend

@@ -129,6 +129,11 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           filterByType: FieldType.number,
         },
       })
+      .addBooleanSwitch({
+        path: 'showCellBorder',
+        name: 'Show cell border',
+        defaultValue: false,
+      })
       .addSelect({
         path: 'from',
         name: 'From',
@@ -159,6 +164,13 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         },
         defaultValue: '0',
       })
+      .addCustomEditor({
+        id: 'regions',
+        path: 'regions',
+        name: 'Time regions',
+        description: 'Highlight time regions during the day',
+        editor: TimeRegionEditor,
+      })
       .addBooleanSwitch({
         path: 'showLegend',
         name: 'Show legend',
@@ -185,13 +197,6 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
             { label: 'Low', value: 'low' },
           ],
         },
-      })
-      .addCustomEditor({
-        id: 'regions',
-        path: 'regions',
-        name: 'Time regions',
-        description: 'Highlight time regions during the day',
-        editor: TimeRegionEditor,
       });
   });
 
