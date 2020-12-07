@@ -23,11 +23,9 @@ export interface BucketPoint {
 
 export interface BucketData {
   numBuckets: number;
-  min: number;
-  max: number;
   points: BucketPoint[];
-  valueDisplay: DisplayProcessor;
-  timeDisplay: DisplayProcessor;
+  valueField: Field<number>;
+  timeField: Field<number>;
 }
 
 // reduce applies a calculation to an aggregated point set.
@@ -136,10 +134,8 @@ export const bucketize = (
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
     points: points,
-    min: valueField.config.min ?? Number.NEGATIVE_INFINITY,
-    max: valueField.config.max ?? Number.POSITIVE_INFINITY,
-    valueDisplay: valueField.display ? valueField.display : defaultDisplay,
-    timeDisplay: timeField.display ? timeField.display : defaultDisplay,
+    valueField,
+    timeField,
   };
 };
 

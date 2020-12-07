@@ -2,13 +2,13 @@ import React from 'react';
 
 import { dateTimeParse, TimeRange, dateTime } from '@grafana/data';
 
-import { TimeRegion } from '../TimeRegionEditor';
+import { TimeRegion } from './TimeRegionEditor';
 import { BucketData } from '../bucket';
 import { XAxis } from './XAxis';
 import { YAxis } from './YAxis';
 import { Heatmap } from './Heatmap';
 
-interface HeatmapChartProps {
+interface HeatmapWithAxesProps {
   data: BucketData;
   width: number;
   height: number;
@@ -21,10 +21,9 @@ interface HeatmapChartProps {
 }
 
 /**
- * A heatmap chart where each column represents a day, and each row represents a
- * bucket.
+ * HeatmapWithAxes adds an X and Y axis to a Heatmap.
  */
-export const HeatmapChart: React.FC<HeatmapChartProps> = ({
+export const HeatmapWithAxes: React.FC<HeatmapWithAxesProps> = ({
   data,
   width,
   height,

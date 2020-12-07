@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { dateTimeParse } from '@grafana/data';
-import { TimeRegion } from '../TimeRegionEditor';
+import { TimeRegion } from './TimeRegionEditor';
 
 import { BucketData } from '../bucket';
 
@@ -61,7 +61,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           const startOfDay = dateTimeParse(d.dayMillis, { timeZone }).startOf('day');
           const bucketStart = dateTimeParse(d.bucketStartMillis, { timeZone });
           const minutesSinceStartOfDay = bucketStart.hour!() * 60 + bucketStart.minute!();
-          const displayValue = data.valueDisplay(d.value);
+          const displayValue = data.valueField.display!(d.value);
 
           return (
             <Tippy

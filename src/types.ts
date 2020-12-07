@@ -1,7 +1,8 @@
 import { ThresholdsConfig } from '@grafana/data';
-import { TimeRegion } from './TimeRegionEditor';
+import { TimeRegion } from './components/TimeRegionEditor';
 
-type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
+export type Quality = 'low' | 'medium' | 'high';
+export type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | 'last';
 
 export interface HeatmapOptions {
   // Dimensions
@@ -16,6 +17,7 @@ export interface HeatmapOptions {
   // Legend
   showLegend: boolean;
   showValueIndicator: boolean;
+  legendGradientQuality: Quality;
 }
 
 export interface HeatmapFieldConfig {

@@ -8,9 +8,9 @@ import {
 } from '@grafana/data';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
-import { TimeRegionEditor } from './TimeRegionEditor';
+import { TimeRegionEditor } from './components/TimeRegionEditor';
 
-import { FieldSelectEditor } from './FieldSelectEditor';
+import { FieldSelectEditor } from './components/FieldSelectEditor';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
@@ -132,7 +132,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addSelect({
         path: 'from',
         name: 'From',
-        description: 'Hide values before this time',
+        description: 'Hide values before this hour',
         settings: {
           options: d3.range(0, 24, 1).map(h => ({
             label: dateTime()
@@ -147,7 +147,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addSelect({
         path: 'to',
         name: 'To',
-        description: 'Hide values after this time',
+        description: 'Hide values after this hour',
         settings: {
           options: d3.range(0, 24, 1).map(h => ({
             label: dateTime()
@@ -168,8 +168,23 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
       .addBooleanSwitch({
         path: 'showValueIndicator',
         name: 'Show value indicator',
+        description: 'Displays an indicator for the value under the cursor',
         defaultValue: false,
         category: ['Legend'],
+      })
+      .addSelect({
+        path: 'legendGradientQuality',
+        name: 'Gradient quality',
+        description: 'Higher quality means more elements on screen. Reduce quality if the panel is slow.',
+        defaultValue: 'high',
+        category: ['Legend'],
+        settings: {
+          options: [
+            { label: 'High', value: 'high' },
+            { label: 'Medium', value: 'medium' },
+            { label: 'Low', value: 'low' },
+          ],
+        },
       })
       .addCustomEditor({
         id: 'regions',

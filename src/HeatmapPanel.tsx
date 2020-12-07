@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { TimeRange, Field, PanelProps, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
+import React from 'react';
+import { PanelProps } from '@grafana/data';
 import { useTheme } from '@grafana/ui';
 
-import { bucketize } from './bucket';
+import { Chart } from './components/Chart';
+import { measureText } from './helpers';
 import { HeatmapOptions } from './types';
-import { makeSpectrumColorScale, makeCustomColorScale } from './colors';
-import { TimeRegion } from './TimeRegionEditor';
-
-import { HeatmapChart } from './components/HeatmapChart';
-import { Legend } from './components/Legend';
 
 interface Props extends PanelProps<HeatmapOptions> {}
 
@@ -21,10 +17,17 @@ interface Props extends PanelProps<HeatmapOptions> {}
  * like query results, panel options, and the current timezone.
  */
 export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, timeZone, timeRange }) => {
-  const { valueFieldName, timeFieldName } = options;
-
   // `options` contains the properties defined in the `HeatmapOptions` object.
-  const { regions, showLegend, showValueIndicator, from, to } = options;
+  const {
+    valueFieldName,
+    timeFieldName,
+    regions,
+    showLegend,
+    showValueIndicator,
+    legendGradientQuality,
+    from,
+    to,
+  } = options;
 
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
@@ -33,44 +36,47 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
 
   return (
     <svg width={width} height={height}>
+      {/* For multiple queries, divide the panel into segments of equal height. */}
       {data.series.map((frame, i) => {
         const segmentHeight = height / data.series.length;
 
-        // Use the first temporal field.
-        const timeField = frame.fields.find(f => f.name === timeFieldName) ?? frame.fields.find(f => f.type === 'time');
-        if (!timeField) {
+        // Helper for creating a vertically and horizontally centered message.
+        const displayMessage = (message: string): React.ReactNode => {
           return (
             <text
               style={{ fill: theme.colors.text }}
-              x={width / 2 - measureText('Select a time dimension') / 2}
+              x={width / 2 - measureText(message) / 2}
               y={i * segmentHeight + segmentHeight / 2}
             >
-              Select a time dimension
+              {message}
             </text>
           );
+        };
+
+        // Attempt to get a time field by name or default to the first time
+        // field we find.
+        const timeField = timeFieldName
+          ? frame.fields.find(f => f.name === timeFieldName)
+          : frame.fields.find(f => f.type === 'time');
+        if (!timeField || timeField.type !== 'time') {
+          return displayMessage('Select a time dimension');
         }
 
-        // Use the first numeric field.
-        const valueField =
-          frame.fields.find(f => f.name === valueFieldName) ?? frame.fields.find(f => f.type === 'number');
-        if (!valueField) {
-          return (
-            <text
-              style={{ fill: theme.colors.text }}
-              x={width / 2 - measureText('Select a value dimension') / 2}
-              y={i * segmentHeight + segmentHeight / 2}
-            >
-              Select a value dimension
-            </text>
-          );
+        // Attempt to get a value field by name or default to the first number
+        // field we find.
+        const valueField = valueFieldName
+          ? frame.fields.find(f => f.name === valueFieldName)
+          : frame.fields.find(f => f.type === 'number');
+        if (!valueField || valueField.type !== 'number') {
+          return displayMessage('Select a value dimension');
         }
 
         return (
           <g key={i} transform={`translate(0, ${i * segmentHeight})`}>
-            <HeatmapContainer
+            <Chart
               width={width}
               height={segmentHeight}
-              showLegend={showLegend}
+              legend={showLegend}
               timeField={timeField}
               valueField={valueField}
               timeZone={timeZone}
@@ -78,138 +84,11 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               dailyIntervalHours={dailyIntervalHours}
               regions={regions ?? []}
               showValueIndicator={showValueIndicator}
+              legendGradientQuality={legendGradientQuality}
             />
           </g>
         );
       })}
     </svg>
   );
-};
-
-interface HeatmapContainerProps {
-  width: number;
-  height: number;
-
-  showLegend: boolean;
-  showValueIndicator: boolean;
-  timeField: Field<number>;
-  valueField: Field<number>;
-  timeZone: string;
-  timeRange: TimeRange;
-  dailyIntervalHours: [number, number];
-  regions: TimeRegion[];
-}
-
-/**
- * HeatmapContainer is used to support multiple queries. A HeatmapContainer is
- * created for each query.
- */
-export const HeatmapContainer: React.FC<HeatmapContainerProps> = ({
-  width,
-  height,
-  showLegend,
-  timeField,
-  valueField,
-  timeZone,
-  timeRange,
-  dailyIntervalHours,
-  regions,
-  showValueIndicator,
-}) => {
-  const [showTriangle, setShowTriangle] = useState<number | undefined>();
-
-  // Create a histogram for each day. This builds the main data structure that
-  // we'll use for the heatmap visualization.
-  const bucketData = bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours);
-
-  // Get custom fields options. For now, we use the configuration in the first
-  // numeric field in the data frame.
-  const fieldConfig = valueField.config.custom;
-  const colorPalette = fieldConfig.colorPalette;
-  const invertPalette = fieldConfig.invertPalette;
-  const colorSpace = fieldConfig.colorSpace;
-  const thresholds: ThresholdsConfig = fieldConfig.thresholds ?? {
-    mode: ThresholdsMode.Percentage,
-    steps: [],
-  };
-
-  // Create the scale we'll be using to map values to colors.
-  const customColorScale = makeCustomColorScale(colorSpace, bucketData.min, bucketData.max, thresholds);
-  const spectrumColorScale = makeSpectrumColorScale(colorPalette, bucketData.min, bucketData.max, invertPalette);
-
-  const colorDisplay = (value: number): string => {
-    switch (colorPalette) {
-      case 'custom':
-        return customColorScale(value);
-      case 'fieldOptions':
-        return valueField.display!(value).color!;
-      default:
-        return spectrumColorScale(value);
-    }
-  };
-
-  // Calculate dimensions for the legend.
-  const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
-  const legendWidth = width - (legendPadding.left + legendPadding.right);
-  const legendHeight = 40;
-
-  // Heatmap expands to fill any space not used by the legend.
-  const heatmapPadding = { top: 0, left: 0, bottom: 0, right: legendPadding.right };
-  const heatmapWidth = width - (heatmapPadding.left + heatmapPadding.right);
-  const heatmapHeight =
-    height -
-    (heatmapPadding.top + heatmapPadding.bottom) -
-    (showLegend ? legendHeight + legendPadding.top + legendPadding.bottom : 0.0);
-
-  const onBucketHover = (value?: number) => {
-    setShowTriangle(value);
-  };
-
-  return (
-    <>
-      <g transform={`translate(${heatmapPadding.left}, ${heatmapPadding.top})`}>
-        <HeatmapChart
-          data={bucketData}
-          width={heatmapWidth}
-          height={heatmapHeight}
-          colorDisplay={colorDisplay}
-          timeZone={timeZone}
-          timeRange={timeRange}
-          dailyInterval={dailyIntervalHours}
-          regions={regions}
-          onHover={onBucketHover}
-        />
-      </g>
-
-      {showLegend ? (
-        <g
-          transform={`translate(${legendPadding.left}, ${heatmapPadding.top +
-            heatmapHeight +
-            heatmapPadding.bottom +
-            legendPadding.top})`}
-        >
-          <Legend
-            width={legendWidth}
-            height={legendHeight}
-            min={bucketData.min}
-            max={bucketData.max}
-            valueDisplay={bucketData.valueDisplay}
-            colorDisplay={colorDisplay}
-            currentValue={showTriangle}
-            indicator={showValueIndicator}
-          />
-        </g>
-      ) : null}
-    </>
-  );
-};
-
-const measureText = (text: string): number => {
-  var canvas = document.createElement('canvas');
-  var ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.font = '14px Arial';
-    return ctx.measureText(text).width;
-  }
-  return 0;
 };

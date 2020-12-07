@@ -3,6 +3,7 @@ import React from 'react';
 import { DisplayProcessor } from '@grafana/data';
 import { ColorSpectrum } from './ColorSpectrum';
 import { LegendAxis } from './LegendAxis';
+import { Quality } from '../types';
 
 interface LegendProps {
   width: number;
@@ -13,6 +14,7 @@ interface LegendProps {
   colorDisplay: (value: number) => string;
   currentValue?: number;
   indicator: boolean;
+  quality: Quality;
 }
 
 /**
@@ -27,6 +29,7 @@ export const Legend: React.FC<LegendProps> = ({
   colorDisplay,
   currentValue,
   indicator,
+  quality,
 }) => {
   const legendHeight = 20;
   const spectrumHeight = height - legendHeight;
@@ -44,6 +47,7 @@ export const Legend: React.FC<LegendProps> = ({
         min={min}
         max={max}
         indicator={indicator}
+        quality={quality}
       />
     </g>
   );

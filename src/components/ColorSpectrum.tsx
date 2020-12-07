@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as d3 from 'd3';
+import { Quality } from '../types';
 
 export interface Props {
   width: number;
@@ -11,13 +12,39 @@ export interface Props {
   colorDisplay: (value: number) => string;
   currentValue?: number;
   indicator: boolean;
+  quality: Quality;
 }
 
 /**
  * ColorSpectrum draws a SVG color spectrum using a given color scale.
+ *
+ * TODO: The current implementation subdivides the spectrum into individual SVG
+ * elements. To get a perfect gradient on a high DPI screen, this can degrade
+ * the performance of the panel. Is there a way to get a smooth gradient using
+ * CSS, using only a single rectangle?
  */
-export const ColorSpectrum: React.FC<Props> = ({ width, height, colorDisplay, min, max, currentValue, indicator }) => {
-  const stepSize = Math.ceil(1);
+export const ColorSpectrum: React.FC<Props> = ({
+  width,
+  height,
+  colorDisplay,
+  min,
+  max,
+  currentValue,
+  indicator,
+  quality,
+}) => {
+  const calculateStepSize = (quality: Quality): number => {
+    switch (quality) {
+      case 'high':
+        return Math.ceil(1);
+      case 'medium':
+        return Math.ceil(width / 40);
+      case 'low':
+        return Math.ceil(width / 20);
+    }
+  };
+
+  const stepSize = calculateStepSize(quality);
 
   // Divide the spectrum into segments of equal size.
   const positionRange = d3.range(0, width, stepSize);
