@@ -58,6 +58,6 @@ This section lists the available configuration options for the JSON API data sou
 
 ### Missing data
 
-By default, data sources limits the number of data points to the width of the panel, in pixels. If you're visualizing data over a long time, then you may need to adjust the **Max data points** under **Query options** in the query editor.
+By default, data sources limits the number of data points to the width of the panel in pixels. If you're visualizing data over a long time, then you may need to adjust the **Max data points** under **Query options** in the query editor.
 
 ![Missing data](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/raw/master/src/img/missing-datapoints.png)
