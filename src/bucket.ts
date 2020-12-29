@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field } from '@grafana/data';
+import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field, getDisplayProcessor } from '@grafana/data';
 
 export interface Point {
   time: number;
@@ -130,6 +130,13 @@ export const bucketize = (
       value,
     }))
   );
+
+  const aggregatedValues = points.map(({ value }) => value);
+  valueField.config.min = d3.min(aggregatedValues);
+  valueField.config.max = d3.max(aggregatedValues);
+  valueField.display = getDisplayProcessor({
+    field: valueField,
+  });
 
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
