@@ -131,12 +131,10 @@ export const bucketize = (
     }))
   );
 
-  const aggregatedValues = points.map(({ value }) => value);
-  valueField.config.min = d3.min(aggregatedValues);
-  valueField.config.max = d3.max(aggregatedValues);
-  valueField.display = getDisplayProcessor({
-    field: valueField,
-  });
+  recalculateMinMax(
+    valueField,
+    points.map(({ value }) => value)
+  );
 
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
@@ -144,6 +142,27 @@ export const bucketize = (
     valueField,
     timeField,
   };
+};
+
+// recalculateMinMax updates the field min and max to the extents of the
+// aggregated values rather than the raw values.
+//
+// TODO: While this works, it feels like hacky. Is there a better way to do this?
+const recalculateMinMax = (field: Field<number>, aggregatedValues: number[]) => {
+  // Future versions of Grafana will change how the min and max are calculated.
+  // For example, if Min or Max are set to auto, they will be undefined.
+  //
+  // Also, we should probably use getFieldConfigWithMinMax in the future:
+  // https://github.com/grafana/grafana/blob/097dcc456a617bc67c3d5134e22adc00ad5b79c5/packages/grafana-data/src/field/scale.ts#L68
+  const autoMin = !field.config.min || field.config.min === field.state?.calcs?.min;
+  const autoMax = !field.config.max || field.config.max === field.state?.calcs?.max;
+
+  if (autoMin) field.config.min = d3.min(aggregatedValues);
+  if (autoMax) field.config.max = d3.max(aggregatedValues);
+
+  field.display = getDisplayProcessor({
+    field: field,
+  });
 };
 
 // Lookup table for calculations.
