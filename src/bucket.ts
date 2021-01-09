@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field } from '@grafana/data';
+import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field, getDisplayProcessor } from '@grafana/data';
 
 export interface Point {
   time: number;
@@ -123,7 +123,8 @@ export const bucketize = (
   // Group and reduce values.
   const groupedByMinutes = groupByMinutes(rowsWithinDailyInterval, customData.groupBy, timeZone);
   const reducedMinutes = reduce(groupedByMinutes, calculations[customData.calculation]);
-  const points = groupByDay(reducedMinutes).flatMap(({ time, values }) =>
+
+  const aggregatedPoints = groupByDay(reducedMinutes).flatMap(({ time, values }) =>
     values.map(({ time, value }) => ({
       dayMillis: time,
       bucketStartMillis: time,
@@ -131,12 +132,38 @@ export const bucketize = (
     }))
   );
 
+  recalculateMinMax(
+    valueField,
+    aggregatedPoints.map(({ value }) => value)
+  );
+
   return {
     numBuckets: Math.floor(minutesPerDay / customData.groupBy),
-    points: points,
+    points: aggregatedPoints,
     valueField,
     timeField,
   };
+};
+
+// recalculateMinMax updates the field min and max to the extents of the
+// aggregated values rather than the raw values.
+//
+// TODO: While this works, it feels like hacky. Is there a better way to do this?
+const recalculateMinMax = (field: Field<number>, values: number[]) => {
+  // Future versions of Grafana will change how the min and max are calculated.
+  // For example, if Min or Max are set to auto, they will be undefined.
+  //
+  // Also, we should probably use getFieldConfigWithMinMax in the future:
+  // https://github.com/grafana/grafana/blob/097dcc456a617bc67c3d5134e22adc00ad5b79c5/packages/grafana-data/src/field/scale.ts#L68
+  const autoMin = !field.config.min || field.config.min === field.state?.calcs?.min;
+  const autoMax = !field.config.max || field.config.max === field.state?.calcs?.max;
+
+  if (autoMin) field.config.min = d3.min(values);
+  if (autoMax) field.config.max = d3.max(values);
+
+  field.display = getDisplayProcessor({
+    field: field,
+  });
 };
 
 // Lookup table for calculations.
