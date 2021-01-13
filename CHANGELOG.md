@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.1 (2020-01-13)
+
+[Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.9.0...v0.9.1)
+
+### Bug fixes
+
+- Min and max were incorrectly calculated for aggregations ([#16](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/issues/16))
+
 ## 0.9.0 (2020-12-07)
 
 [Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.8.1...v0.9.0)
