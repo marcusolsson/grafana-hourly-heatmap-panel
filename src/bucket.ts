@@ -158,8 +158,12 @@ const recalculateMinMax = (field: Field<number>, values: number[]) => {
   const autoMin = !field.config.min || field.config.min === field.state?.calcs?.min;
   const autoMax = !field.config.max || field.config.max === field.state?.calcs?.max;
 
-  if (autoMin) field.config.min = d3.min(values);
-  if (autoMax) field.config.max = d3.max(values);
+  if (autoMin) {
+    field.config.min = d3.min(values);
+  }
+  if (autoMax) {
+    field.config.max = d3.max(values);
+  }
 
   field.display = getDisplayProcessor({
     field: field,
