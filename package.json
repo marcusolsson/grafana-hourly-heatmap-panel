@@ -1,7 +1,11 @@
 {
   "name": "grafana-hourly-heatmap-panel",
   "version": "0.9.1",
-  "description": "An hourly heatmap panel plugin for Grafana.",
+  "description": "An hourly heatmap panel plugin for Grafana",
+  "keywords": [
+    "grafana"
+  ],
+  "license": "Apache-2.0",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
@@ -9,11 +13,17 @@
     "watch": "grafana-toolkit plugin:dev --watch",
     "sign": "grafana-toolkit plugin:sign"
   },
+  "homepage": "https://grafana.com/plugins/marcusolsson-hourly-heatmap-panel",
+  "bugs": "https://github.com/marcusolsson/grafana-hourly-heatmap-panel/issues",
   "repository": "github:marcusolsson/grafana-hourly-heatmap-panel",
-  "author": "Marcus Olsson",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "github:marcusolsson/grafana-hourly-heatmap-panel/issues"
+  "author": {
+    "name": "Marcus Olsson",
+    "email": "marcus.olsson@hey.com",
+    "url": "https://marcus.se.net"
+  },
+  "dependencies": {
+    "@tippyjs/react": "^4.1.0",
+    "semver": "^7.3.4"
   },
   "devDependencies": {
     "@grafana/data": "^7.3.0",
@@ -26,9 +36,5 @@
   },
   "engines": {
     "node": ">=14"
-  },
-  "dependencies": {
-    "@tippyjs/react": "^4.1.0",
-    "semver": "^7.3.4"
   }
 }
