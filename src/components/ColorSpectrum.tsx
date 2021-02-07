@@ -42,15 +42,9 @@ export const ColorSpectrum: React.FC<Props> = React.memo(
     const positionRange = d3.range(0, width, stepSize);
 
     // Map a X coordinate to a value between min and max.
-    const toValueScale = d3
-      .scaleLinear()
-      .domain([0, width])
-      .range([min, max]);
+    const toValueScale = d3.scaleLinear().domain([0, width]).range([min, max]);
 
-    const fromValueScale = d3
-      .scaleLinear()
-      .domain([min, max])
-      .range([0, width]);
+    const fromValueScale = d3.scaleLinear().domain([min, max]).range([0, width]);
 
     return (
       <>
@@ -63,10 +57,13 @@ export const ColorSpectrum: React.FC<Props> = React.memo(
         <g>
           {positionRange.map((pos, i) => {
             const cellSize = pos + stepSize > width ? width - pos : stepSize;
-            return <rect key={i} x={pos} width={cellSize} height={height} fill={colorDisplay(toValueScale(pos))} />;
+            return (
+              <rect key={i} x={pos} width={cellSize} height={height} fill={colorDisplay(toValueScale(pos) ?? 0)} />
+            );
           })}
         </g>
       </>
     );
   }
 );
+ColorSpectrum.displayName = 'ColorSpectrum';

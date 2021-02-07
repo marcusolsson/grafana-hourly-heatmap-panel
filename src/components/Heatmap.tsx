@@ -45,15 +45,9 @@ export const Heatmap: React.FC<HeatmapProps> = ({
 }) => {
   const theme = useTheme();
 
-  const x = d3
-    .scaleBand()
-    .domain(values)
-    .range([0, width]);
+  const x = d3.scaleBand().domain(values).range([0, width]);
 
-  const y = d3
-    .scaleLinear()
-    .domain(dailyIntervalMinutes)
-    .range([0, height]);
+  const y = d3.scaleLinear().domain(dailyIntervalMinutes).range([0, height]);
 
   const cellWidth = Math.ceil(x.bandwidth());
   const cellHeight = bucketHeight(height, numBuckets, dailyIntervalMinutes);
@@ -73,7 +67,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
           const content = (
             <rect
               x={x(startOfDay.valueOf().toString())}
-              y={Math.ceil(y(minutesSinceStartOfDay))}
+              y={Math.ceil(y(minutesSinceStartOfDay) ?? 0)}
               fill={colorDisplay(d.value)}
               width={cellWidth}
               height={cellHeight}
@@ -110,24 +104,25 @@ export const Heatmap: React.FC<HeatmapProps> = ({
       </g>
       <g>
         {regions
-          .filter(region => {
-            const yPos = Math.ceil(y(region.start.hour * 60 + region.start.minute));
+          .filter((region) => {
+            const yPos = Math.ceil(y(region.start.hour * 60 + region.start.minute) ?? 0);
             return 0 <= yPos && yPos < height;
           })
-          .map(region => {
+          .map((region, key) => {
             const regionDuration =
               region.end.hour * 60 + region.end.minute - (region.start.hour * 60 + region.start.minute);
-            const yPos = Math.ceil(y(region.start.hour * 60 + region.start.minute));
+            const yPos = Math.ceil(y(region.start.hour * 60 + region.start.minute) ?? 0);
             const regionHeight = Math.ceil(regionDuration * pixelsPerMinute);
             return (
               <rect
+                key={key}
                 x={0}
                 y={yPos}
                 width={width}
                 height={yPos + regionHeight >= height ? height - yPos : regionHeight}
                 stroke={region.color}
                 fill={region.color}
-                pointer-events="none"
+                pointerEvents="none"
                 strokeWidth={2}
               />
             );

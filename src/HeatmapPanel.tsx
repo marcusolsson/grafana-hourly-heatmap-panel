@@ -57,8 +57,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
         // Attempt to get a time field by name or default to the first time
         // field we find.
         const timeField = timeFieldName
-          ? frame.fields.find(f => f.name === timeFieldName)
-          : frame.fields.find(f => f.type === 'time');
+          ? frame.fields.find((f) => f.name === timeFieldName)
+          : frame.fields.find((f) => f.type === 'time');
         if (!timeField || timeField.type !== 'time') {
           return displayMessage('Select a time dimension');
         }
@@ -66,8 +66,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
         // Attempt to get a value field by name or default to the first number
         // field we find.
         const valueField = valueFieldName
-          ? frame.fields.find(f => f.name === valueFieldName)
-          : frame.fields.find(f => f.type === 'number');
+          ? frame.fields.find((f) => f.name === valueFieldName)
+          : frame.fields.find((f) => f.type === 'number');
         if (!valueField || valueField.type !== 'number') {
           return displayMessage('Select a value dimension');
         }

@@ -142,11 +142,11 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   return (value: number): string => {
     switch (colorPalette) {
       case 'custom':
-        return customColorScale(value);
+        return customColorScale(value) ?? '#ffffff';
       case 'fieldOptions':
         return field.display!(value).color!;
       default:
-        return spectrumColorScale(value);
+        return spectrumColorScale(value) ?? '#ffffff';
     }
   };
 };

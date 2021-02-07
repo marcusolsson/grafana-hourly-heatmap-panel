@@ -49,7 +49,14 @@ export const TimeRegionEditor: React.FC<Props> = ({ value, onChange }) => {
   return (
     <div>
       {(value || []).map((region, index) => {
-        return <TimeRegionInput value={region} onChange={onRegionChange(index)} onRemove={onRegionRemove(index)} />;
+        return (
+          <TimeRegionInput
+            key={index}
+            value={region}
+            onChange={onRegionChange(index)}
+            onRemove={onRegionRemove(index)}
+          />
+        );
       })}
       <Button
         variant="secondary"
@@ -132,7 +139,7 @@ const TimeRegionInput: React.FC<TimeRegionInputProps> = ({ value, onChange, onRe
           <div>{`${from}–${to}`}</div>
         </span>
         <div style={{ marginRight: theme.spacing.sm }}>
-          <ColorPicker color={value.color ?? '#ffffff'} onChange={color => onChange({ ...value, color })} />
+          <ColorPicker color={value.color ?? '#ffffff'} onChange={(color) => onChange({ ...value, color })} />
         </div>
         <IconButton
           name="trash-alt"
@@ -157,7 +164,7 @@ const TimeRegionInput: React.FC<TimeRegionInputProps> = ({ value, onChange, onRe
                   onChange({ ...value, start });
                   setFrom(formatTime(start));
                 }}
-                onChange={e => setFrom(e.currentTarget.value)}
+                onChange={(e) => setFrom(e.currentTarget.value)}
                 className={css`
                   max-width: 64px;
                 `}
@@ -172,7 +179,7 @@ const TimeRegionInput: React.FC<TimeRegionInputProps> = ({ value, onChange, onRe
                   onChange({ ...value, end });
                   setTo(formatTime(end));
                 }}
-                onChange={e => setTo(e.currentTarget.value)}
+                onChange={(e) => setTo(e.currentTarget.value)}
                 className={css`
                   max-width: 64px;
                 `}

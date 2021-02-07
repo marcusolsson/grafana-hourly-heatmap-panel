@@ -16,43 +16,35 @@ const localeOptions = {
   day: '2-digit',
 };
 
-const referenceText = dateTimeParse(0)
-  .toDate()
-  .toLocaleDateString(undefined, localeOptions);
+const referenceText = dateTimeParse(0).toDate().toLocaleDateString(undefined, localeOptions);
 
 export const XAxis: React.FC<XAxisProps> = React.memo(({ width, values, from, to, numDays, timeZone }) => {
-  const x = d3
-    .scaleBand()
-    .domain(values)
-    .rangeRound([0, width]);
+  const x = d3.scaleBand().domain(values).rangeRound([0, width]);
 
-  const xTime = d3
-    .scaleTime()
-    .domain([from.toDate(), to.toDate()])
-    .range([0, width]);
+  const xTime = d3.scaleTime().domain([from.toDate(), to.toDate()]).range([0, width]);
 
   const every = calculateTickInterval(width, numDays, referenceText);
 
   const xTimeAxis = d3
     .axisBottom(xTime)
     .ticks(d3.timeDay, every)
-    .tickFormat(d =>
+    .tickFormat((d) =>
       dateTimeParse(d as number, { timeZone })
         .toDate()
         .toLocaleDateString(undefined, localeOptions)
     );
 
-  const xCategoryAxis = d3.axisBottom(x).tickFormat(d =>
-    dateTimeParse(parseInt(d, 10), { timeZone })
-      .toDate()
-      .toLocaleDateString(undefined, localeOptions)
-  );
+  const xCategoryAxis = d3
+    .axisBottom(x)
+    .tickFormat((d) =>
+      dateTimeParse(parseInt(d, 10), { timeZone }).toDate().toLocaleDateString(undefined, localeOptions)
+    );
 
   const xAxis: any = every > 1 ? xTimeAxis : xCategoryAxis;
 
   return (
     <g
-      ref={node => {
+      ref={(node) => {
         const container = d3.select(node).call(xAxis);
 
         // Remove junk.
@@ -77,3 +69,4 @@ const measureText = (text: string): number => {
   }
   return 0;
 };
+XAxis.displayName = 'XAxis';

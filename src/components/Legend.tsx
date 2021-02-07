@@ -44,3 +44,4 @@ export const Legend: React.FC<LegendProps> = React.memo(
     );
   }
 );
+Legend.displayName = 'Legend';

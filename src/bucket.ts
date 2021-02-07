@@ -39,7 +39,7 @@ const reduce = (agg: PointSet[], calculation: (n: Array<number | undefined>) => 
 // groupByMinutes groups a set of points
 export const groupByMinutes = (points: Point[], minutes: number, timeZone: string): PointSet[] => {
   // Create keys for interval start.
-  const rounded = points.map(point => {
+  const rounded = points.map((point) => {
     const intervalStart = dateTime(point.time);
     intervalStart.subtract(intervalStart.minute ? intervalStart.minute() % minutes : 0.0, 'minutes');
 
@@ -63,10 +63,8 @@ export const groupByMinutes = (points: Point[], minutes: number, timeZone: strin
 
 // groupByDay works like to groupByDays but is a bit simpler.
 export const groupByDay = (points: Point[]): PointSet[] => {
-  const rounded = points.map(point => ({
-    [dateTime(point.time)
-      .startOf('day')
-      .valueOf()]: point,
+  const rounded = points.map((point) => ({
+    [dateTime(point.time).startOf('day').valueOf()]: point,
   }));
 
   return Object.entries(
@@ -104,13 +102,13 @@ export const bucketize = (
     dateTimeParse(timeRange.to.valueOf(), { timeZone }).endOf('day'),
   ];
 
-  const rowsWithinTimeRange = rows.filter(row => {
+  const rowsWithinTimeRange = rows.filter((row) => {
     // Filter points within time range.
     const curr = dateTimeParse(row.time, { timeZone });
     return extents[0].valueOf() <= curr.valueOf() && curr.valueOf() < extents[1].valueOf();
   });
 
-  const rowsWithinDailyInterval = rowsWithinTimeRange.filter(row => {
+  const rowsWithinDailyInterval = rowsWithinTimeRange.filter((row) => {
     // Filter rows within interval.
     const dt = dateTimeParse(row.time, { timeZone });
     const hour = dt.hour ? dt.hour() : 0.0;

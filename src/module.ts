@@ -1,4 +1,4 @@
-import { PanelPlugin } from '@grafana/data';
+import { PanelPlugin, StandardOptionConfig } from '@grafana/data';
 import {
   FieldType,
   FieldConfigProperty,
@@ -16,17 +16,17 @@ import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 
-const buildStandardOptions = () => {
-  const options = [
-    FieldConfigProperty.Min,
-    FieldConfigProperty.Max,
-    FieldConfigProperty.Decimals,
-    FieldConfigProperty.Unit,
-  ];
+const buildStandardOptions = (): Partial<Record<FieldConfigProperty, StandardOptionConfig>> => {
+  const options: Partial<Record<FieldConfigProperty, StandardOptionConfig>> = {
+    [FieldConfigProperty.Min]: {},
+    [FieldConfigProperty.Max]: {},
+    [FieldConfigProperty.Decimals]: {},
+    [FieldConfigProperty.Unit]: {},
+  };
 
   if (hasCapability('color-scheme')) {
-    options.push(FieldConfigProperty.Color);
-    options.push(FieldConfigProperty.Thresholds);
+    options[FieldConfigProperty.Color] = {};
+    options[FieldConfigProperty.Thresholds] = {};
   }
 
   return options;
@@ -50,7 +50,7 @@ const buildColorPaletteOptions = () => {
 
 export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(HeatmapPanel)
   .useFieldConfig({
-    useCustomConfig: builder => {
+    useCustomConfig: (builder) => {
       builder
         .addSelect({
           path: 'groupBy',
@@ -117,13 +117,13 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
           editor: standardEditorsRegistry.get('thresholds').editor as any,
           override: standardEditorsRegistry.get('thresholds').editor as any,
           process: thresholdsOverrideProcessor,
-          shouldApply: field => field.type === FieldType.number,
+          shouldApply: (field) => field.type === FieldType.number,
           showIf: paletteSelected('custom'),
         });
     },
     standardOptions: buildStandardOptions(),
   })
-  .setPanelOptions(builder => {
+  .setPanelOptions((builder) => {
     return builder
       .addCustomEditor({
         id: 'timeFieldName',
@@ -165,11 +165,8 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         name: 'From',
         description: 'Hide values before this hour',
         settings: {
-          options: d3.range(0, 24, 1).map(h => ({
-            label: dateTime()
-              .startOf('day')
-              .add(h, 'hour')
-              .format('HH:mm'),
+          options: d3.range(0, 24, 1).map((h) => ({
+            label: dateTime().startOf('day').add(h, 'hour').format('HH:mm'),
             value: `${h}`,
           })),
         },
@@ -180,11 +177,8 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         name: 'To',
         description: 'Hide values after this hour',
         settings: {
-          options: d3.range(0, 24, 1).map(h => ({
-            label: dateTime()
-              .startOf('day')
-              .add(h, 'hour')
-              .format('HH:mm'),
+          options: d3.range(0, 24, 1).map((h) => ({
+            label: dateTime().startOf('day').add(h, 'hour').format('HH:mm'),
             value: `${h}`,
           })),
         },

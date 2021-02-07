@@ -8,21 +8,18 @@ interface YAxisProps {
 }
 
 export const YAxis: React.FC<YAxisProps> = React.memo(({ height, dailyInterval }) => {
-  const y = d3
-    .scaleLinear()
-    .domain(dailyInterval)
-    .rangeRound([0, height]);
+  const y = d3.scaleLinear().domain(dailyInterval).rangeRound([0, height]);
 
   const every = calculateTickHeight(height);
 
   const yAxis: any = d3
     .axisLeft(y)
     .tickValues(d3.range(dailyInterval[0], dailyInterval[1], every))
-    .tickFormat(d => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
+    .tickFormat((d) => formatDuration(toDuration(d as number, 'hours'), 'HH:mm'));
 
   return (
     <g
-      ref={node => {
+      ref={(node) => {
         const container = d3.select(node).call(yAxis);
 
         // Remove junk.
@@ -32,6 +29,7 @@ export const YAxis: React.FC<YAxisProps> = React.memo(({ height, dailyInterval }
     />
   );
 });
+YAxis.displayName = 'YAxis';
 
 const calculateTickHeight = (height: number) => {
   const preferredTickHeight = 20;

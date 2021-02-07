@@ -79,14 +79,11 @@ export const makeCustomColorScale = (colorSpace: string, min: number, max: numbe
 
   // If the thresholds mode is `percentage`, we first need to map the percentage
   // from [0, 100] to [min, max].
-  const scale = d3
-    .scaleLinear()
-    .domain([0, 100])
-    .range([min, max]);
+  const scale = d3.scaleLinear().domain([0, 100]).range([min, max]);
 
   return d3
     .scaleLinear<string>()
-    .domain(thresholds.steps.map(({ value }) => (value >= 0 ? scale(value) : 0.0)))
+    .domain(thresholds.steps.map(({ value }): number => (value >= 0 ? scale(value) ?? 0.0 : 0.0)))
     .range(colorRange)
     .interpolate(interpolator);
 };
