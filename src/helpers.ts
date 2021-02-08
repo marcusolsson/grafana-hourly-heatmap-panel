@@ -1,3 +1,4 @@
+import { FieldConfigProperty, StandardOptionConfig } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { gte } from 'semver';
 
@@ -11,9 +12,22 @@ export const hasCapability = (capability: string) => {
   switch (capability) {
     case 'color-scheme':
       return gte(version, '7.3.0');
+    case 'standard-options':
+      return gte(version, '7.4.0');
     default:
       return false;
   }
+};
+
+export const standardOptions = (options: FieldConfigProperty[]): any => {
+  const init: Partial<Record<FieldConfigProperty, StandardOptionConfig>> = {};
+
+  return hasCapability('standard-options')
+    ? options.reduce((acc, curr) => {
+        acc[curr] = {};
+        return acc;
+      }, init)
+    : options;
 };
 
 /**

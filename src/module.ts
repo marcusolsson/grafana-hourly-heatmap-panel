@@ -1,4 +1,4 @@
-import { PanelPlugin, StandardOptionConfig } from '@grafana/data';
+import { PanelPlugin } from '@grafana/data';
 import {
   FieldType,
   FieldConfigProperty,
@@ -6,7 +6,7 @@ import {
   standardEditorsRegistry,
   thresholdsOverrideProcessor,
 } from '@grafana/data';
-import { hasCapability } from './helpers';
+import { hasCapability, standardOptions } from './helpers';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
 import { TimeRegionEditor } from './components/TimeRegionEditor';
@@ -16,20 +16,20 @@ import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 
-const buildStandardOptions = (): Partial<Record<FieldConfigProperty, StandardOptionConfig>> => {
-  const options: Partial<Record<FieldConfigProperty, StandardOptionConfig>> = {
-    [FieldConfigProperty.Min]: {},
-    [FieldConfigProperty.Max]: {},
-    [FieldConfigProperty.Decimals]: {},
-    [FieldConfigProperty.Unit]: {},
-  };
+const buildStandardOptions = (): any => {
+  const options = [
+    FieldConfigProperty.Min,
+    FieldConfigProperty.Max,
+    FieldConfigProperty.Decimals,
+    FieldConfigProperty.Unit,
+  ];
 
   if (hasCapability('color-scheme')) {
-    options[FieldConfigProperty.Color] = {};
-    options[FieldConfigProperty.Thresholds] = {};
+    options.push(FieldConfigProperty.Color);
+    options.push(FieldConfigProperty.Thresholds);
   }
 
-  return options;
+  return standardOptions(options);
 };
 
 const buildColorPaletteOptions = () => {
@@ -133,7 +133,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         category: ['Dimensions'],
         editor: FieldSelectEditor,
         settings: {
-          filterByType: FieldType.time,
+          filterByType: [FieldType.time],
         },
       })
       .addCustomEditor({
@@ -144,7 +144,7 @@ export const plugin = new PanelPlugin<HeatmapOptions, HeatmapFieldConfig>(Heatma
         category: ['Dimensions'],
         editor: FieldSelectEditor,
         settings: {
-          filterByType: FieldType.number,
+          filterByType: [FieldType.number],
         },
       })
       .addBooleanSwitch({

@@ -6,8 +6,8 @@ export type Calculation = 'mean' | 'sum' | 'count' | 'min' | 'max' | 'first' | '
 
 export interface HeatmapOptions {
   // Dimensions
-  timeFieldName: string;
-  valueFieldName: string;
+  timeFieldName?: string;
+  valueFieldName?: string;
 
   // Display
   from: string;
