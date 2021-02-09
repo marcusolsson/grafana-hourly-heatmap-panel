@@ -2,7 +2,7 @@ import React from 'react';
 import { PanelProps } from '@grafana/data';
 import { useTheme } from '@grafana/ui';
 import { Chart } from './components/Chart';
-import { measureText } from './helpers';
+import { measureText } from 'grafana-plugin-support';
 import { HeatmapOptions } from './types';
 
 interface Props extends PanelProps<HeatmapOptions> {}
@@ -46,7 +46,7 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
           return (
             <text
               style={{ fill: theme.colors.text }}
-              x={width / 2 - measureText(message) / 2}
+              x={width / 2 - (measureText(message, '14px')?.width ?? 0) / 2}
               y={i * segmentHeight + segmentHeight / 2}
             >
               {message}

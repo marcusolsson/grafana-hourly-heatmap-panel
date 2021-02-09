@@ -6,12 +6,12 @@ import {
   standardEditorsRegistry,
   thresholdsOverrideProcessor,
 } from '@grafana/data';
-import { hasCapability, standardOptions } from './helpers';
+import { hasCapability, standardOptionsCompat } from 'grafana-plugin-support';
 import { HeatmapOptions, HeatmapFieldConfig } from './types';
 import { HeatmapPanel } from './HeatmapPanel';
 import { TimeRegionEditor } from './components/TimeRegionEditor';
 
-import { FieldSelectEditor } from './components/FieldSelectEditor';
+import { FieldSelectEditor } from 'grafana-plugin-support';
 import * as d3 from 'd3';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
@@ -29,7 +29,7 @@ const buildStandardOptions = (): any => {
     options.push(FieldConfigProperty.Thresholds);
   }
 
-  return standardOptions(options);
+  return standardOptionsCompat(options);
 };
 
 const buildColorPaletteOptions = () => {
