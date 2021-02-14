@@ -1,9 +1,13 @@
 import React from 'react';
-import { PanelProps } from '@grafana/data';
-import { useTheme } from '@grafana/ui';
+import { FieldType, PanelProps } from '@grafana/data';
 import { Chart } from './components/Chart';
-import { measureText } from 'grafana-plugin-support';
 import { HeatmapOptions } from './types';
+import { PanelWizard } from 'grafana-plugin-support';
+
+const usage = {
+  schema: [{ type: FieldType.time }, { type: FieldType.number }],
+  url: 'https://github.com/marcusolsson/grafana-hourly-heatmap-panel',
+};
 
 interface Props extends PanelProps<HeatmapOptions> {}
 
@@ -33,44 +37,40 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
   // Parse the extents of hours to display in a day.
   const dailyIntervalHours: [number, number] = [parseFloat(from), to === '0' ? 24 : parseFloat(to)];
 
-  const theme = useTheme();
+  if (data.series.length === 0) {
+    return <PanelWizard {...usage} />;
+  }
+
+  const frames = data.series.map((frame) => {
+    // Attempt to get a time field by name or default to the first time
+    // field we find.
+    const timeField = timeFieldName
+      ? frame.fields.find((f) => f.name === timeFieldName)
+      : frame.fields.find((f) => f.type === 'time');
+
+    // Attempt to get a value field by name or default to the first number
+    // field we find.
+    const valueField = valueFieldName
+      ? frame.fields.find((f) => f.name === valueFieldName)
+      : frame.fields.find((f) => f.type === 'number');
+
+    return { timeField, valueField, fields: frame.fields };
+  });
+
+  // Make sure all data frames are valid time series.
+  for (let i = 0; i < frames.length; i++) {
+    const frame = frames[i];
+
+    if (!frame.timeField || !frame.valueField) {
+      return <PanelWizard {...usage} fields={frame.fields} />;
+    }
+  }
 
   return (
     <svg width={width} height={height}>
       {/* For multiple queries, divide the panel into segments of equal height. */}
-      {data.series.map((frame, i) => {
+      {frames.map((frame, i) => {
         const segmentHeight = height / data.series.length;
-
-        // Helper for creating a vertically and horizontally centered message.
-        const displayMessage = (message: string): React.ReactNode => {
-          return (
-            <text
-              style={{ fill: theme.colors.text }}
-              x={width / 2 - (measureText(message, '14px')?.width ?? 0) / 2}
-              y={i * segmentHeight + segmentHeight / 2}
-            >
-              {message}
-            </text>
-          );
-        };
-
-        // Attempt to get a time field by name or default to the first time
-        // field we find.
-        const timeField = timeFieldName
-          ? frame.fields.find((f) => f.name === timeFieldName)
-          : frame.fields.find((f) => f.type === 'time');
-        if (!timeField || timeField.type !== 'time') {
-          return displayMessage('Select a time dimension');
-        }
-
-        // Attempt to get a value field by name or default to the first number
-        // field we find.
-        const valueField = valueFieldName
-          ? frame.fields.find((f) => f.name === valueFieldName)
-          : frame.fields.find((f) => f.type === 'number');
-        if (!valueField || valueField.type !== 'number') {
-          return displayMessage('Select a value dimension');
-        }
 
         return (
           <g key={i} transform={`translate(0, ${i * segmentHeight})`}>
@@ -78,8 +78,8 @@ export const HeatmapPanel: React.FC<Props> = ({ options, data, width, height, ti
               width={width}
               height={segmentHeight}
               legend={showLegend}
-              timeField={timeField}
-              valueField={valueField}
+              timeField={frame.timeField!}
+              valueField={frame.valueField!}
               timeZone={timeZone}
               timeRange={timeRange}
               dailyIntervalHours={dailyIntervalHours}
