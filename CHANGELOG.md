@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0 (2020-02-16)
+
+[Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.9.1...v0.10.0)
+
+### Enhancements
+
+- Make dimensions clearable
+- Add fallback panel for unsupported Grafana versions
+- Add wizard for configuring the query
+
 ## 0.9.1 (2020-01-13)
 
 [Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.9.0...v0.9.1)
