@@ -60,6 +60,8 @@ export const Chart: React.FC<ChartProps> = ({
 
   const colorMapper = buildColorMapper(valueField);
 
+  const nullValueColor = valueField.config.custom.nullValueColor;
+
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
   const legendWidth = width - (legendPadding.left + legendPadding.right);
@@ -91,6 +93,7 @@ export const Chart: React.FC<ChartProps> = ({
           width={heatmapWidth}
           height={heatmapHeight}
           colorDisplay={colorMapper}
+          nullValueColor = {nullValueColor}
           timeZone={timeZone}
           timeRange={timeRange}
           dailyInterval={dailyIntervalHours}

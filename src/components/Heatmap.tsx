@@ -15,6 +15,7 @@ interface HeatmapProps {
   values: string[];
   data: BucketData;
   colorDisplay: (value: number) => string;
+  nullValueColor: string;
   width: number;
   height: number;
   numBuckets: number;
@@ -33,6 +34,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
   values,
   data,
   colorDisplay,
+  nullValueColor,
   width,
   height,
   numBuckets,
@@ -68,7 +70,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({
             <rect
               x={x(startOfDay.valueOf().toString())}
               y={Math.ceil(y(minutesSinceStartOfDay) ?? 0)}
-              fill={colorDisplay(d.value)}
+              fill={colorDisplay(d.value) || nullValueColor}
               width={cellWidth}
               height={cellHeight}
               onMouseLeave={() => onHover(undefined)}

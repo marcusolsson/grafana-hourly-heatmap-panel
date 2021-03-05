@@ -97,6 +97,11 @@ export const plugin = getPanelPluginOrFallback(
             showIf: (config: HeatmapFieldConfig) =>
               config.colorPalette !== 'custom' && config.colorPalette !== 'fieldOptions',
           })
+          .addColorPicker({
+            path:'nullValueColor', 
+            name:'Null Value Color', 
+            defaultValue:'grey'
+          })
           .addSelect({
             path: 'colorSpace',
             name: 'Color space',
