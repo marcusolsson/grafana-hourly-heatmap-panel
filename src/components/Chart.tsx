@@ -61,6 +61,7 @@ export const Chart: React.FC<ChartProps> = ({
   const colorMapper = buildColorMapper(valueField);
 
   const nullValueColor = valueField.config.custom.nullValueColor;
+  console.log(nullValueColor);
 
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
