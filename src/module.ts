@@ -100,7 +100,7 @@ export const plugin = getPanelPluginOrFallback(
           .addColorPicker({
             path:'nullValueColor', 
             name:'Null Value Color', 
-            defaultValue:'grey'
+            defaultValue:'rgb(155, 155, 155)'
           })
           .addSelect({
             path: 'colorSpace',

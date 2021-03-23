@@ -60,9 +60,6 @@ export const Chart: React.FC<ChartProps> = ({
 
   const colorMapper = buildColorMapper(valueField);
 
-  const nullValueColor = valueField.config.custom.nullValueColor;
-  console.log(nullValueColor);
-
   // Calculate dimensions for the legend.
   const legendPadding = { top: 10, left: 35, bottom: 0, right: 10 };
   const legendWidth = width - (legendPadding.left + legendPadding.right);
@@ -94,7 +91,6 @@ export const Chart: React.FC<ChartProps> = ({
           width={heatmapWidth}
           height={heatmapHeight}
           colorDisplay={colorMapper}
-          nullValueColor = {nullValueColor}
           timeZone={timeZone}
           timeRange={timeRange}
           dailyInterval={dailyIntervalHours}
@@ -133,6 +129,7 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   const customFieldOptions = field.config.custom;
   const colorPalette = customFieldOptions.colorPalette;
   const invertPalette = customFieldOptions.invertPalette;
+  const nullValueColor = customFieldOptions.nullValueColor;
   const colorSpace = customFieldOptions.colorSpace;
   const colorThresholds: ThresholdsConfig = customFieldOptions.thresholds ?? {
     mode: ThresholdsMode.Percentage,
@@ -146,11 +143,11 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   return (value: number): string => {
     switch (colorPalette) {
       case 'custom':
-        return customColorScale(value) ?? '#ffffff';
+        return customColorScale(value) ?? nullValueColor;
       case 'fieldOptions':
         return field.display!(value).color!;
       default:
-        return spectrumColorScale(value) ?? '#ffffff';
+        return spectrumColorScale(value) ?? nullValueColor;
     }
   };
 };
