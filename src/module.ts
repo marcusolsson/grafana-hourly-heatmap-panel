@@ -98,9 +98,9 @@ export const plugin = getPanelPluginOrFallback(
               config.colorPalette !== 'custom' && config.colorPalette !== 'fieldOptions',
           })
           .addColorPicker({
-            path:'nullValueColor',
-            name:'Null Value Color',
-            defaultValue:'rgb(155, 155, 155)',
+            path: 'nullValueColor',
+            name: 'Null Value Color',
+            defaultValue: 'rgb(155, 155, 155)',
           })
           .addSelect({
             path: 'colorSpace',
