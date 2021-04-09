@@ -56,6 +56,7 @@ This section lists the available configuration options for the JSON API data sou
 | _Calculation_ | Calculation to use for reducing data within a bucket |
 | _Color palette_ | Colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own. Select **Field options** to use the colors from the built-in **Color scheme** field option |
 | _Invert color palette_ | Inverts the currently selected color palette |
+| _Null value color_ | Color to display when a bucket contains no data as opposed to a data value of 0. |
 
 ## Troubleshooting
 

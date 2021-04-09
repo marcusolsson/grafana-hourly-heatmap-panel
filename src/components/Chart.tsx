@@ -129,6 +129,7 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   const customFieldOptions = field.config.custom;
   const colorPalette = customFieldOptions.colorPalette;
   const invertPalette = customFieldOptions.invertPalette;
+  const nullValueColor = customFieldOptions.nullValueColor;
   const colorSpace = customFieldOptions.colorSpace;
   const colorThresholds: ThresholdsConfig = customFieldOptions.thresholds ?? {
     mode: ThresholdsMode.Percentage,
@@ -142,11 +143,11 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   return (value: number): string => {
     switch (colorPalette) {
       case 'custom':
-        return customColorScale(value) ?? '#ffffff';
+        return customColorScale(value) ?? nullValueColor;
       case 'fieldOptions':
         return field.display!(value).color!;
       default:
-        return spectrumColorScale(value) ?? '#ffffff';
+        return spectrumColorScale(value) ?? nullValueColor;
     }
   };
 };
