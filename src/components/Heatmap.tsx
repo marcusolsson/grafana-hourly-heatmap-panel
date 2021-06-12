@@ -1,15 +1,13 @@
-import React from 'react';
-import * as d3 from 'd3';
 import { dateTimeParse } from '@grafana/data';
-import { TimeRegion } from './TimeRegionEditor';
 import { useTheme } from '@grafana/ui';
-
-import { BucketData } from '../bucket';
-
 import Tippy from '@tippyjs/react';
+import * as d3 from 'd3';
+import React from 'react';
 import 'tippy.js/dist/tippy.css';
-
+import { BucketData } from '../bucket';
+import { TimeRegion } from './TimeRegionEditor';
 import { Tooltip } from './Tooltip';
+
 const minutesPerDay = 24 * 60;
 interface HeatmapProps {
   values: string[];

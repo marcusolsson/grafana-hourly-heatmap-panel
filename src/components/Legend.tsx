@@ -1,9 +1,8 @@
-import React from 'react';
-
 import { DisplayProcessor } from '@grafana/data';
+import React from 'react';
+import { Quality } from '../types';
 import { ColorSpectrum } from './ColorSpectrum';
 import { LegendAxis } from './LegendAxis';
-import { Quality } from '../types';
 
 interface LegendProps {
   width: number;

@@ -1,6 +1,6 @@
-import React from 'react';
-import * as d3 from 'd3';
 import { dateTime, DateTimeDuration, toDuration } from '@grafana/data';
+import * as d3 from 'd3';
+import React from 'react';
 
 interface YAxisProps {
   height: number;

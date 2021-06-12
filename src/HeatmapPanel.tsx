@@ -1,8 +1,8 @@
-import React from 'react';
 import { FieldType, PanelProps } from '@grafana/data';
+import { PanelWizard } from 'grafana-plugin-support';
+import React from 'react';
 import { Chart } from './components/Chart';
 import { HeatmapOptions } from './types';
-import { PanelWizard } from 'grafana-plugin-support';
 
 const usage = {
   schema: [{ type: FieldType.time }, { type: FieldType.number }],

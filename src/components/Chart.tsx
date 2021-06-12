@@ -1,13 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { TimeRange, Field, ThresholdsMode, ThresholdsConfig } from '@grafana/data';
-
+import { Field, ThresholdsConfig, ThresholdsMode, TimeRange } from '@grafana/data';
+import React, { useMemo, useState } from 'react';
 import { bucketize } from '../bucket';
-import { makeSpectrumColorScale, makeCustomColorScale } from '../colors';
-import { TimeRegion } from './TimeRegionEditor';
+import { makeCustomColorScale, makeSpectrumColorScale } from '../colors';
 import { Quality } from '../types';
-
 import { HeatmapWithAxes } from './HeatmapWithAxes';
 import { Legend } from './Legend';
+import { TimeRegion } from './TimeRegionEditor';
 
 interface ChartProps {
   width: number;

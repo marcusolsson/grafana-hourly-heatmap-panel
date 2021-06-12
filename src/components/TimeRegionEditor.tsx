@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { StandardEditorProps } from '@grafana/data';
-import { useTheme, Input, ColorPicker, Field, Button, Icon, IconButton, HorizontalGroup } from '@grafana/ui';
 import {} from '@emotion/core';
+import { StandardEditorProps } from '@grafana/data';
+import { Button, ColorPicker, Field, HorizontalGroup, Icon, IconButton, Input, useTheme } from '@grafana/ui';
 import { css } from 'emotion';
+import React, { useState } from 'react';
 
 interface Props extends StandardEditorProps<TimeRegion[], Settings> {}
 

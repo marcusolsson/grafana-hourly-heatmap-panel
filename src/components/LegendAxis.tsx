@@ -1,6 +1,6 @@
-import React from 'react';
-import * as d3 from 'd3';
 import { DisplayProcessor } from '@grafana/data';
+import * as d3 from 'd3';
+import React from 'react';
 
 interface LegendAxisProps {
   width: number;

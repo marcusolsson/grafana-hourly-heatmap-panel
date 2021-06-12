@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
 import { ThresholdsConfig, ThresholdsMode } from '@grafana/data';
+import * as d3 from 'd3';
 
 type Interpolator = (t: number) => string;
 

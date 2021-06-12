@@ -1,22 +1,21 @@
 import {
-  PanelPlugin,
-  FieldType,
-  FieldConfigProperty,
   dateTime,
+  FieldConfigProperty,
+  FieldType,
+  PanelPlugin,
   standardEditorsRegistry,
   thresholdsOverrideProcessor,
 } from '@grafana/data';
-import { HeatmapOptions, HeatmapFieldConfig } from './types';
-import { HeatmapPanel } from './HeatmapPanel';
-import { TimeRegionEditor } from './components/TimeRegionEditor';
-
+import * as d3 from 'd3';
 import {
-  hasCapability,
-  standardOptionsCompat,
   FieldSelectEditor,
   getPanelPluginOrFallback,
+  hasCapability,
+  standardOptionsCompat,
 } from 'grafana-plugin-support';
-import * as d3 from 'd3';
+import { TimeRegionEditor } from './components/TimeRegionEditor';
+import { HeatmapPanel } from './HeatmapPanel';
+import { HeatmapFieldConfig, HeatmapOptions } from './types';
 
 const paletteSelected = (colorPalette: string) => (config: HeatmapFieldConfig) => config.colorPalette === colorPalette;
 

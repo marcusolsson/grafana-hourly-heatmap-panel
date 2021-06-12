@@ -1,6 +1,6 @@
-import React from 'react';
-import * as d3 from 'd3';
 import { DateTime, dateTimeParse } from '@grafana/data';
+import * as d3 from 'd3';
+import React from 'react';
 
 interface XAxisProps {
   values: any[];

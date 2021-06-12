@@ -1,5 +1,5 @@
+import { dateTime, dateTimeParse, DisplayProcessor, Field, getDisplayProcessor, TimeRange } from '@grafana/data';
 import * as d3 from 'd3';
-import { TimeRange, dateTime, dateTimeParse, DisplayProcessor, Field, getDisplayProcessor } from '@grafana/data';
 
 export interface Point {
   time: number;

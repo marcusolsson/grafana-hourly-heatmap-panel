@@ -1,12 +1,10 @@
+import { dateTime, dateTimeParse, TimeRange } from '@grafana/data';
 import React from 'react';
-
-import { dateTimeParse, TimeRange, dateTime } from '@grafana/data';
-
-import { TimeRegion } from './TimeRegionEditor';
 import { BucketData } from '../bucket';
+import { Heatmap } from './Heatmap';
+import { TimeRegion } from './TimeRegionEditor';
 import { XAxis } from './XAxis';
 import { YAxis } from './YAxis';
-import { Heatmap } from './Heatmap';
 
 interface HeatmapWithAxesProps {
   data: BucketData;

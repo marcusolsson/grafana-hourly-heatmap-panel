@@ -1,5 +1,5 @@
+import { DateTime, DisplayValue } from '@grafana/data';
 import React from 'react';
-import { DisplayValue, DateTime } from '@grafana/data';
 
 const minutesPerDay = 24 * 60;
 
