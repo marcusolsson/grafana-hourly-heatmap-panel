@@ -12,13 +12,13 @@ interface TooltipProps {
 
 // Generates a tooltip for a data point.
 export const Tooltip: React.FC<TooltipProps> = ({ bucketStartTime, displayValue, numBuckets, tz }) => {
-  const localeOptionsDate = {
+  const localeOptionsDate: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     timeZone: tz === 'browser' ? undefined : tz,
   };
-  const localeOptionsTime = {
+  const localeOptionsTime: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: tz === 'browser' ? undefined : tz,

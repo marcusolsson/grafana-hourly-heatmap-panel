@@ -11,7 +11,7 @@ interface XAxisProps {
   timeZone: string;
 }
 
-const localeOptions = {
+const localeOptions: Intl.DateTimeFormatOptions = {
   month: '2-digit',
   day: '2-digit',
 };

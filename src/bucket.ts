@@ -1,4 +1,13 @@
-import { dateTime, dateTimeParse, DisplayProcessor, Field, getDisplayProcessor, TimeRange } from '@grafana/data';
+import {
+  dateTime,
+  dateTimeParse,
+  DisplayProcessor,
+  Field,
+  getDisplayProcessor,
+  GrafanaTheme,
+  TimeRange,
+  TimeZone,
+} from '@grafana/data';
 import * as d3 from 'd3';
 
 export interface Point {
@@ -88,7 +97,8 @@ export const bucketize = (
   valueField: Field<number>,
   timeZone: string,
   timeRange: TimeRange,
-  dailyInterval: [number, number]
+  dailyInterval: [number, number],
+  theme: GrafanaTheme
 ): BucketData => {
   // Convert data frame fields to rows.
   const rows = Array.from({ length: timeField.values.length }, (_, i) => ({
@@ -132,7 +142,9 @@ export const bucketize = (
 
   recalculateMinMax(
     valueField,
-    aggregatedPoints.map(({ value }) => value)
+    aggregatedPoints.map(({ value }) => value),
+    theme,
+    timeZone
   );
 
   return {
@@ -147,7 +159,7 @@ export const bucketize = (
 // aggregated values rather than the raw values.
 //
 // TODO: While this works, it feels like hacky. Is there a better way to do this?
-const recalculateMinMax = (field: Field<number>, values: number[]) => {
+const recalculateMinMax = (field: Field<number>, values: number[], theme: GrafanaTheme, timeZone: TimeZone) => {
   // Future versions of Grafana will change how the min and max are calculated.
   // For example, if Min or Max are set to auto, they will be undefined.
   //
@@ -164,7 +176,9 @@ const recalculateMinMax = (field: Field<number>, values: number[]) => {
   }
 
   field.display = getDisplayProcessor({
-    field: field,
+    field,
+    theme,
+    timeZone,
   });
 };
 
