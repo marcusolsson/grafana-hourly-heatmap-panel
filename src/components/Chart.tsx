@@ -56,6 +56,7 @@ export const Chart: React.FC<ChartProps> = ({
     timeZone,
     timeRange,
     dailyIntervalHours,
+    theme,
   ]);
 
   const colorMapper = buildColorMapper(valueField);
