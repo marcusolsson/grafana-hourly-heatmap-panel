@@ -24,7 +24,10 @@
         "url": "https://github.com/marcusolsson/grafana-hourly-heatmap-panel/blob/main/LICENSE"
       }
     ],
-    "screenshots": [],
+    "screenshots": [
+      { "name": "Hourly heatmap (Dark)", "path": "img/dark.png" },
+      { "name": "Hourly heatmap (Light)", "path": "img/light.png" }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },

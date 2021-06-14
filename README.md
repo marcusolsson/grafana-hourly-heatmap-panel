@@ -11,7 +11,7 @@ A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
 An hourly heatmap aggregates data into buckets by day and hour to analyze activity or traffic during the day.
 
-![Screenshot](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/raw/main/src/img/screenshot.png)
+![Screenshot](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/raw/main/src/img/dark.png)
 
 ## Motivation
 
@@ -27,36 +27,36 @@ This section lists the available configuration options for the JSON API data sou
 
 #### Dimensions
 
-| Option | Description |
-|--------|-------------|
-| _Time_ | Name of the field to use for time. Defaults to the first time field. |
+| Option  | Description                                                             |
+|---------|-------------------------------------------------------------------------|
+| _Time_  | Name of the field to use for time. Defaults to the first time field.    |
 | _Value_ | Name of the field to use for value. Defaults to the first number field. |
 
 #### Display
 
-| Option | Description |
-|--------|-------------|
-| _Show cell border_ | Toggles a cell border to make it easier to distinguish cells with similar values
-| _Show tooltip_ | Toggles the tooltip. Due to the current tooltip implementation, this severely impacts performance and I recommend that you disable this for large time intervals. For more information, refer to [#12](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/issues/12).
-| _From_ and _To_ | Lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic |
+| Option             | Description                                                                                                                                                                                                                                                                     |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Show cell border_ | Toggles a cell border to make it easier to distinguish cells with similar values                                                                                                                                                                                                |
+| _Show tooltip_     | Toggles the tooltip. Due to the current tooltip implementation, this severely impacts performance and I recommend that you disable this for large time intervals. For more information, refer to [#12](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/issues/12). |
+| _From_ and _To_    | Lets you choose the hours to display. This can be used to set working hours, or to filter parts of the day with low traffic                                                                                                                                                     |
 
 #### Legend
 
-| Option | Description |
-|--------|-------------|
-| _Show legend_ | Toggles the color spectrum |
-| _Show value indicator_ | Toggles an indicator that shows the current value in the legend |
-| _Gradient quality_ | Determines the quality of the color spectrum. Higher quality means more SVG elements being drawn. Reduce the quality if you experience degraded performance. |
+| Option                 | Description                                                                                                                                                  |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Show legend_          | Toggles the color spectrum                                                                                                                                   |
+| _Show value indicator_ | Toggles an indicator that shows the current value in the legend                                                                                              |
+| _Gradient quality_     | Determines the quality of the color spectrum. Higher quality means more SVG elements being drawn. Reduce the quality if you experience degraded performance. |
 
 ### Field options
 
-| Option | Description |
-|--------|-------------|
-| _Group by_ | Size of each bucket |
-| _Calculation_ | Calculation to use for reducing data within a bucket |
-| _Color palette_ | Colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own. Select **Field options** to use the colors from the built-in **Color scheme** field option |
-| _Invert color palette_ | Inverts the currently selected color palette |
-| _Null value color_ | Color to display when a bucket contains no data as opposed to a data value of 0. |
+| Option                 | Description                                                                                                                                                                                                          |
+|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Group by_             | Size of each bucket                                                                                                                                                                                                  |
+| _Calculation_          | Calculation to use for reducing data within a bucket                                                                                                                                                                 |
+| _Color palette_        | Colors to use for the heatmap. Select from any of the predefined color palettes, or select **Custom** to create your own. Select **Field options** to use the colors from the built-in **Color scheme** field option |
+| _Invert color palette_ | Inverts the currently selected color palette                                                                                                                                                                         |
+| _Null value color_     | Color to display when a bucket contains no data as opposed to a data value of 0.                                                                                                                                     |
 
 ## Troubleshooting
 
