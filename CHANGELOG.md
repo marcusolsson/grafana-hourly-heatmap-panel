@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0 (2021-06-15)
+
+[Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.10.0...v1.0.0)
+
+### Enhancements
+
+- Set color for null values ([#24](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/pull/24)) (thanks! [@KatrinaTurner](https://github.com/KatrinaTurner)!)
+- Fix dates in changelog ([#26](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/pull/26)) (thanks! [@dnrce](https://github.com/dnrce))
+- Fix display processor bug in Grafana 8
+
 ## 0.10.0 (2021-02-16)
 
 [Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v0.9.1...v0.10.0)
