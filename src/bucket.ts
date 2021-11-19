@@ -4,7 +4,7 @@ import {
   DisplayProcessor,
   Field,
   getDisplayProcessor,
-  GrafanaTheme,
+  GrafanaTheme2,
   TimeRange,
   TimeZone,
 } from '@grafana/data';
@@ -98,7 +98,7 @@ export const bucketize = (
   timeZone: string,
   timeRange: TimeRange,
   dailyInterval: [number, number],
-  theme: GrafanaTheme
+  theme: GrafanaTheme2
 ): BucketData => {
   // Convert data frame fields to rows.
   const rows = Array.from({ length: timeField.values.length }, (_, i) => ({
@@ -159,7 +159,7 @@ export const bucketize = (
 // aggregated values rather than the raw values.
 //
 // TODO: While this works, it feels like hacky. Is there a better way to do this?
-const recalculateMinMax = (field: Field<number>, values: number[], theme: GrafanaTheme, timeZone: TimeZone) => {
+const recalculateMinMax = (field: Field<number>, values: number[], theme: GrafanaTheme2, timeZone: TimeZone) => {
   // Future versions of Grafana will change how the min and max are calculated.
   // For example, if Min or Max are set to auto, they will be undefined.
   //

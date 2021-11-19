@@ -1,5 +1,5 @@
 import { Field, ThresholdsConfig, ThresholdsMode, TimeRange } from '@grafana/data';
-import { useTheme } from '@grafana/ui';
+import { useTheme2 } from '@grafana/ui';
 import React, { useMemo, useState } from 'react';
 import { bucketize } from '../bucket';
 import { makeCustomColorScale, makeSpectrumColorScale } from '../colors';
@@ -46,18 +46,14 @@ export const Chart: React.FC<ChartProps> = ({
   tooltip,
 }) => {
   const [hoverValue, setHoverValue] = useState<number | undefined>();
-  const theme = useTheme();
+  const theme = useTheme2();
 
   // Create a histogram for each day. This builds the main data structure that
   // we'll use for the heatmap visualization.
-  const bucketData = useMemo(() => bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours, theme), [
-    timeField,
-    valueField,
-    timeZone,
-    timeRange,
-    dailyIntervalHours,
-    theme,
-  ]);
+  const bucketData = useMemo(
+    () => bucketize(timeField, valueField, timeZone, timeRange, dailyIntervalHours, theme),
+    [timeField, valueField, timeZone, timeRange, dailyIntervalHours, theme]
+  );
 
   const colorMapper = buildColorMapper(valueField);
 
