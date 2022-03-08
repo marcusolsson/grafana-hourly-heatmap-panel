@@ -19,6 +19,12 @@ The [carpet-plot](https://github.com/petrslavotinek/grafana-carpetplot) panel pl
 
 Grafana 7.0 introduced a new plugin architecture based on React. Instead of migrating the original plugin from Angular, this is completely rewritten from scratch, using inspiration from the original plugin.
 
+## Maintenance
+
+I maintain [several plugins](https://marcus.se.net/projects/) for Grafana. While my employer allows me to spend some time on developing plugins, most of the work happens on evenings and weekends. At the moment, I'm prioritizing fixing bugs and reviewing PRs over introducing new features.
+
+If you'd still like to propose a new feature, [create a new Discussion](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/discussions/new?category=ideas). While I likely won't be able to work on features myself, I'd be happy to accept pull requests. If you'd like to contribute a feature, please let me know before you start working on it.
+
 ## Configuration
 
 This section lists the available configuration options for the JSON API data source.
