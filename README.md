@@ -6,6 +6,9 @@
 [![Downloads](https://img.shields.io/badge/dynamic/json?logo=grafana&color=F47A20&label=downloads&query=%24.items%5B%3F%28%40.slug%20%3D%3D%20%22marcusolsson-hourly-heatmap-panel%22%29%5D.downloads&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins)](https://grafana.com/grafana/plugins/marcusolsson-hourly-heatmap-panel)
 [![License](https://img.shields.io/github/license/marcusolsson/grafana-hourly-heatmap-panel)](LICENSE)
 [![Twitter](https://img.shields.io/twitter/follow/marcusolsson?color=%231DA1F2&label=twitter&style=plastic)](https://twitter.com/marcusolsson)
+![Maintenance](https://img.shields.io/maintenance/no/2022?style=plastic)
+
+> **Important:** As of July 2022, I'm no longer actively maintaining this plugin. At the time of writing, I'm not aware of any replacement panel.
 
 A panel plugin for [Grafana](https://grafana.com) to visualize hourly heatmaps.
 
@@ -18,12 +21,6 @@ An hourly heatmap aggregates data into buckets by day and hour to analyze activi
 The [carpet-plot](https://github.com/petrslavotinek/grafana-carpetplot) panel plugin is one of the most used plugins for Grafana. Unfortunately, it's no longer being actively maintained.
 
 Grafana 7.0 introduced a new plugin architecture based on React. Instead of migrating the original plugin from Angular, this is completely rewritten from scratch, using inspiration from the original plugin.
-
-## Maintenance
-
-I maintain [several plugins](https://marcus.se.net/projects/) for Grafana. While my employer allows me to spend some time on developing plugins, most of the work happens on evenings and weekends. At the moment, I'm prioritizing fixing bugs and reviewing PRs over introducing new features.
-
-If you'd still like to propose a new feature, [create a new Discussion](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/discussions/new?category=ideas). While I likely won't be able to work on features myself, I'd be happy to accept pull requests. If you'd like to contribute a feature, please let me know before you start working on it.
 
 ## Configuration
 

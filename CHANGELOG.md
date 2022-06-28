@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 (2022-08-28)
+
+[Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v2.0.0...v2.0.1)
+
+Update to Grafana 9.
+
 ## 2.0.0 (2021-11-19)
 
 [Full changelog](https://github.com/marcusolsson/grafana-hourly-heatmap-panel/compare/v1.0.0...v2.0.0)
