@@ -134,17 +134,14 @@ const buildColorMapper = (field: Field<number>): ((value: number) => string) => 
   };
 
   // Create the scales we'll be using to map values to colors.
-  const customColorScale = makeCustomColorScale(colorSpace, field.config.min!, field.config.max!, colorThresholds);
-  const spectrumColorScale = makeSpectrumColorScale(colorPalette, field.config.min!, field.config.max!, invertPalette);
-
-  return (value: number): string => {
-    switch (colorPalette) {
-      case 'custom':
-        return customColorScale(value) ?? nullValueColor;
-      case 'fieldOptions':
-        return field.display!(value).color!;
-      default:
-        return spectrumColorScale(value) ?? nullValueColor;
-    }
-  };
+  switch (colorPalette) {
+    case "custom":
+      const customColorScale = makeCustomColorScale(colorSpace, field.config.min!, field.config.max!, colorThresholds);
+      return (value: number): string => customColorScale(value) ?? nullValueColor;
+    case "fieldOptions":
+      return (value: number): string => field.display!(value).color!;
+    default:
+      const spectrumColorScale = makeSpectrumColorScale(colorPalette, field.config.min!, field.config.max!, invertPalette);
+      return (value: number): string => spectrumColorScale(value) ?? nullValueColor;
+  }
 };
